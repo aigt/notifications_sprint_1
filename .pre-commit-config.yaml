@@ -34,6 +34,11 @@ repos:
     hooks:
       - id: black
 
+  - repo: https://github.com/PyCQA/isort
+    rev: 5.11.4
+    hooks:
+      - id: isort
+
   - repo: https://github.com/PyCQA/autoflake
     rev: v2.0.0
     hooks:
@@ -50,12 +55,10 @@ repos:
       - id: hadolint
 
   - repo: https://github.com/PyCQA/flake8
-    rev: 5.0.4
+    rev: 4.0.1
     hooks:
       - id: flake8
         additional_dependencies:
-          - git+https://github.com/wemake-services/wemake-python-styleguide#egg=wemake-python-styleguide
+          - wemake-python-styleguide ~= 0.17.0
           - flake8-quotes==3.3.2
-        args:
-          - --config=.flake8
-          - --diff
+        args: ["--config=.flake8"]
