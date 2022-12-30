@@ -35,6 +35,11 @@ ignore =
     WPS458
 
 
+per-file-ignores =
+    # WPS323 Found `%` string formatting
+    worker/src/core/logger.py: WPS323
+
+
 exclude =
     # No need to traverse our git directory
     .git,
