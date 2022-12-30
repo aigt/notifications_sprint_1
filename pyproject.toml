@@ -13,9 +13,7 @@ include = '\.pyi?$'
 [tool.isort]
 profile = "black"
 src_paths = [
-    "ugc_api/src",
-    "etl/src",
-    "tests/integration",
+    "worker/src",
 ]
 
 [tool.mypy]
