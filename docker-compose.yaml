@@ -1,0 +1,10 @@
+version: '3.9'
+
+services:
+  worker:
+    build: ./worker
+    env_file:
+      - env_files/worker.env
+    networks:
+      - movies_db_net
+      - mongonet
