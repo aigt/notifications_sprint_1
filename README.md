@@ -1,5 +1,8 @@
 # Проектная работа 10 спринта
 
+![python](https://img.shields.io/badge/python-3.8%20%7C%203.9%20%7C%203.10-blue)
+[![CI](https://github.com/aigt/notifications_sprint_1/actions/workflows/main.yml/badge.svg)](https://github.com/aigt/notifications_sprint_1/actions/workflows/main.yml)
+
 Проектные работы в этом модуле в команде. Задания на спринт вы найдёте внутри тем.
 
 ## CI
@@ -11,9 +14,9 @@
 
 ### Pre-Commit
 
-Для атоматической предварительной проверки перед коммитом используйте (pre-commit)[https://pre-commit.com/]
+Для атоматической предварительной проверки перед коммитом используйте [pre-commit](https://pre-commit.com/)
 
-1. Установка
+1. Установка - см. инструкцию на сайте: https://pre-commit.com/
 
 2. Инициализация для автоматической проверки всех коммитов:
 ```bash
