@@ -24,3 +24,28 @@ pre-commit install
 ```bash
 pre-commit run --all-files
 ```
+
+## Репозитории сервисов инфраструктуры онлайн-кинотеатра
+В инфраструктуру сервиса онлайн-кинотеатр входят следующие микросервисы:
+
+- **Admin Panel** - панель для администрирования базы фильмов
+
+- **API** - сервис предоставляющий интерфейс для работы пользователей с базой фильмов:
+  - https://github.com/aigt/Async_API_sprint_2
+
+- **Auth** - сервис авторизации и аутентификации пользователей:
+  - https://github.com/aigt/Auth_sprint_1
+
+- **Analitical Data** - сервис обработки больших объёмов аналитической информации:
+  - https://github.com/aigt/ugc_sprint_1
+
+- **UGC** - Контент создаваемый пользователями:
+  - https://github.com/aigt/ugc_sprint_2
+
+- **Notifications Service** - Сервис оповещений:
+  - https://github.com/aigt/notifications_sprint_1
+
+
+## Ссылка на данный репозиторий
+
+https://github.com/aigt/notifications_sprint_1
