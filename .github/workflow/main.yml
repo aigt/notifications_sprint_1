@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  telegram_message:
+    name: Send message to telegram
+    runs-on: ubuntu-latest
+    steps:
+      - name: send telegram message on push
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            ${{ github.actor }} открыл новый pull request:
+            ${{ github.event.pull_request.title }}
+
+            Призываю проверить:
+            https://github.com/${{ github.repository }}/pull/${{ github.event.pull_request.number }}
+
+            Так же можно проверить остальные ПР:
+            https://github.com/${{ github.repository }}/pulls
