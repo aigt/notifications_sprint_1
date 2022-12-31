@@ -7,6 +7,7 @@ services:
       - env_files/worker.env
     networks:
       - rabbitmq_net
+      - templates_net
 
   mongo1:
     hostname: mongo1
@@ -55,7 +56,7 @@ services:
   templates_db:
     image: postgres:15.0-alpine
     volumes:
-      - templates_data:/var/lib/postgresql/data/
+      - templates_vol:/var/lib/postgresql/data/
     env_file:
       - env_files/templates_db.env
     environment:
@@ -72,11 +73,41 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - templates_net
+
+  users_db:
+    image: postgres:15.0-alpine
+    volumes:
+      - users_vol:/var/lib/postgresql/data/
+    env_file:
+      - env_files/users_db.env
+    environment:
+      - POSTGRES_HOST=users_db
+      - POSTGRES_PORT=5432
+    expose:
+      - "5432"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -d $$POSTGRES_DB -h $$POSTGRES_HOST -p $$POSTGRES_PORT -U $$POSTGRES_USER"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - users_net
 
 volumes:
   mongo_vol:
   rabbitmq_vol:
+  templates_vol:
+  users_vol:
 
 
 networks:
   mongo_net:
+  rabbitmq_net:
+  templates_net:
+  users_net:
