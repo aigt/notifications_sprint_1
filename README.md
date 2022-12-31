@@ -1,9 +1,26 @@
-# Проектная работа 10 спринта
+# Онлайн-кинотеатр: сервис оповещений
 
 ![python](https://img.shields.io/badge/python-3.8%20%7C%203.9%20%7C%203.10-blue)
 [![CI](https://github.com/aigt/notifications_sprint_1/actions/workflows/main.yml/badge.svg)](https://github.com/aigt/notifications_sprint_1/actions/workflows/main.yml)
 
 Проектные работы в этом модуле в команде. Задания на спринт вы найдёте внутри тем.
+
+## Описание сервиса
+
+Сервис оповещений, с возможностями отправки:
+- Одинаковых писем всем пользователям.
+- Персонифицированных писем.
+- Приветственных письм после регистрации пользователя.
+
+
+### Документация
+
+Сервис реализован в соответствии с разработанным проектным заданием:
+
+- [documentation/Statement.md](documentation/Statement.md) проектное задание
+- [documentation/notify.drawio](documentation/notify.drawio) схема архитектуры сервиса:
+
+<img src="documentation/notify.png" width="100%" height="100%">
 
 ## CI
 
