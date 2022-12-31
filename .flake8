@@ -38,6 +38,7 @@ ignore =
 per-file-ignores =
     # WPS323 Found `%` string formatting
     worker/src/core/logger.py: WPS323
+    notification_api/src/core/logger.py: WPS323
 
 
 exclude =
