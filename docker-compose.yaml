@@ -5,6 +5,45 @@ services:
     build: ./worker
     env_file:
       - env_files/worker.env
+
+  mongo1:
+    hostname: mongo1
+    container_name: localmongo1
+    image: mongo
+    restart: always
+    environment:
+      - MONGO_INITDB_DATABASE=ugc_movies
+    expose:
+      - "27017"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - mongo_vol:/data/db
+    entrypoint:
+      [
+        "/usr/bin/mongod",
+        "--bind_ip_all",
+        "--replSet",
+        "rs0",
+        "--dbpath",
+        "/data/db"
+      ]
     networks:
-      - movies_db_net
-      - mongonet
+      - mongo_net
+
+  mongosetup:
+    image: mongo
+    depends_on:
+      - mongo1
+    volumes:
+      - ./mongo/scripts:/scripts
+    restart: "no"
+    entrypoint: [ "bash", "/scripts/mongo_setup.sh" ]
+    networks:
+      - mongo_net
+
+volumes:
+  mongo_vol:
+
+
+networks:
+  mongo_net:
