@@ -121,7 +121,24 @@
 
 ### Worker Queue
 
-...
+```json
+{
+  "email": "email@host.com",
+
+  // Тип письма, влияет на то какие данные запросит генератор
+  // и какой шаблон применит worker
+  "type": "show_subs|info|welcome",
+
+  // Набор стандартных полей для шаблона
+  "fields": [
+    "login": "hello",
+    "name": "Василий",
+    "surname": "Сидоров",
+    ...
+  ]
+}
+```
+
 
 ### Email Queue
 
