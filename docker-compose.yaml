@@ -5,6 +5,8 @@ services:
     build: ./worker
     env_file:
       - env_files/worker.env
+    networks:
+      - rabbitmq_net
 
   mongo1:
     hostname: mongo1
@@ -41,8 +43,18 @@ services:
     networks:
       - mongo_net
 
+  rabbitmq:
+    image: rabbitmq:3.11-alpine
+    expose:
+      - "5672"
+    volumes:
+      - rabbitmq_vol:/var/lib/rabbitmq/
+    networks:
+      - rabbitmq_net
+
 volumes:
   mongo_vol:
+  rabbitmq_vol:
 
 
 networks:
