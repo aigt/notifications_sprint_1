@@ -1,10 +1,10 @@
 import uvicorn
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
+from notification_api.src.api import health
 
 from core.config import get_settings
 from core.openapi_docs import API_DESCRIPTION, CONTACT
-from notification_api.src.api import health
 
 settings = get_settings()
 

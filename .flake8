@@ -37,8 +37,13 @@ ignore =
 
 per-file-ignores =
     # WPS323 Found `%` string formatting
+    # WPS407 Found mutable module constant
+    # WPS432 Found magic number: ...
+
     worker/src/core/logger.py: WPS323
-    notification_api/src/core/logger.py: WPS323
+    notification_api/src/core/logger.py: WPS323 WPS407
+    notification_api/src/core/config.py: WPS432
+    notification_api/src/core/openapi_docs.py: WPS407
 
 
 exclude =
