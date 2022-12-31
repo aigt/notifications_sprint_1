@@ -126,3 +126,36 @@
 ### Email Queue
 
 ...
+
+
+## Шаблоны писем
+
+Шаблоны писем используют синтаксис [jinja](https://jinja.palletsprojects.com/)
+
+
+### Приветственные письма после регистрации пользователя
+
+```html
+<!DOCTYPE html>
+<html lang="ru">
+<head><title>Добро пожаловать!</title></head>
+<body>
+  <h1>Привет {{ name }}!</h1>
+  <p>Рады приветствовать тебя в нашем кинотеатре!</p>
+</body>
+</html>
+```
+
+
+### Информационное письмо
+
+```html
+<!DOCTYPE html>
+<html lang="ru">
+<head><title>Для информации.</title></head>
+<body>
+  <h1>{{ title }}</h1>
+  <p>{{ text }}</p>
+</body>
+</html>
+```
