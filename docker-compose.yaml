@@ -99,11 +99,35 @@ services:
     networks:
       - users_net
 
+  notifications_db:
+    image: postgres:15.0-alpine
+    volumes:
+      - notifications_vol:/var/lib/postgresql/data/
+    env_file:
+      - env_files/notifications_db.env
+    environment:
+      - POSTGRES_HOST=notifications_db
+      - POSTGRES_PORT=5432
+    expose:
+      - "5432"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -d $$POSTGRES_DB -h $$POSTGRES_HOST -p $$POSTGRES_PORT -U $$POSTGRES_USER"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - notifications_net
+
 volumes:
   mongo_vol:
   rabbitmq_vol:
   templates_vol:
   users_vol:
+  notifications_vol:
 
 
 networks:
@@ -111,3 +135,4 @@ networks:
   rabbitmq_net:
   templates_net:
   users_net:
+  notifications_net:
