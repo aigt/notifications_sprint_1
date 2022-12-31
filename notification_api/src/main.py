@@ -4,6 +4,7 @@ from fastapi.responses import ORJSONResponse
 
 from core.config import get_settings
 from core.openapi_docs import API_DESCRIPTION, CONTACT
+from notification_api.src.api import health
 
 settings = get_settings()
 
@@ -16,6 +17,8 @@ app = FastAPI(
     openapi_url=settings.openapi_url,
     default_response_class=ORJSONResponse,
 )
+
+app.include_router(health.router, prefix=settings.api_health, tags=["api_healthcheck"])
 
 
 def local_start() -> None:
