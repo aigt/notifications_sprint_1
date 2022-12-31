@@ -142,7 +142,13 @@
 
 ### Email Queue
 
-...
+
+```json
+{
+  "email": "email@host.com",
+  "content": "..."
+}
+```
 
 
 ## Шаблоны писем
