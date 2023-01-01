@@ -39,11 +39,11 @@ per-file-ignores =
     # WPS323 Found `%` string formatting
     # WPS407 Found mutable module constant
     # WPS432 Found magic number: ...
-
-    worker/src/core/logger.py: WPS323
-    notification_api/src/core/logger.py: WPS323 WPS407
+    worker/src/core/logger.py: WPS323,
+    notification_api/src/core/logger.py: WPS323, WPS407
     notification_api/src/core/config.py: WPS432
     notification_api/src/core/openapi_docs.py: WPS407
+    tests/integration: WPS401
 
 
 exclude =
@@ -61,7 +61,11 @@ exclude =
     # This contains our built documentation
     build,
     # This contains builds of flake8 that we don't want to check
-    dist
+    dist,
+    tests/integration/*
+
+
+max-complexity = 10
 
 
 max-line-length = 120
