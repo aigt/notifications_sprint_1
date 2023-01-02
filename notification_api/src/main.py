@@ -1,4 +1,5 @@
 import uvicorn
+from api.v1.api import api_router
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 from notification_api.src.api import health
@@ -19,6 +20,7 @@ app = FastAPI(
 )
 
 app.include_router(health.router, prefix=settings.api_health, tags=["api_healthcheck"])
+app.include_router(api_router, prefix=settings.api_v1_str)
 
 
 def local_start() -> None:
