@@ -91,6 +91,64 @@ jobs:
           name: reports
           path: reports/
 
+  tests:
+    name: Mypy type checking
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - service_name: "worker"
+            path: "tests/integration/worker"
+            app_path: "worker"
+            history_db_env: ${{ secrets.HISTORY_DB_ENV_FILE }}
+            templates_db_env: ${{ secrets.TEMPLATES_DB_ENV_FILE }}
+            worker_env: ${{ secrets.WORKER_ENV_FILE }}
+          - service_name: "api"
+            path: "tests/integration/api"
+            app_path: "notification_api"
+    steps:
+      - uses: actions/checkout@v3
+
+      - shell: pwsh
+        # Give an id to the step, so we can reference it later
+        id: check_file_changed
+        run: |
+          # Diff HEAD with the previous commit
+          $diff = git diff --name-only HEAD^ HEAD
+
+          $SourceDiff = $diff | Where-Object { $_ -match '^${{ matrix.path }}/' -or $_ -match '^${{ matrix.app_path }}/' }
+          $HasDiff = $SourceDiff.Length -gt 0
+
+          # Set the output named "files_changed"
+          Write-Host "::set-output name=docs_changed::$HasDiff"
+
+      - shell: pwsh
+        # steps.<step_id>.outputs.<output name>
+        # if: steps.check_file_changed.outputs.files_changed == 'True'
+        run: echo "The files under tests are changed - ${{ steps.check_file_changed.outputs.files_changed }}"
+
+      - name: "Create history_db.env file"
+        if: ${{ matrix.history_db_env }}
+        run: |
+          echo "${{ matrix.history_db_env }}" > ${{ matrix.path }}/env_files/history_db.env
+
+      - name: "Create templates_db.env file"
+        if: ${{ matrix.templates_db_env }}
+        run: |
+          echo "${{ matrix.templates_db_env }}" > ${{ matrix.path }}/env_files/templates_db.env
+
+      - name: "Create worker.env file"
+        if: ${{ matrix.worker_env }}
+        run: |
+          echo "${{ matrix.worker_env }}" > ${{ matrix.path }}/env_files/worker.env
+
+      - name: Run tests
+        working-directory: ${{ matrix.path }}
+        run: |
+          cd tests/integration
+          docker-compose up --build --abort-on-container-exit --exit-code-from tests
+
   telegram_message:
     name: Send message to telegram
     runs-on: ubuntu-latest
