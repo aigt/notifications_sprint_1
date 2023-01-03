@@ -32,4 +32,5 @@ services:
     env_file:
       - test.env
     entrypoint: >
-      sh -c "python -m pytest -v"
+      sh -c "python3 rabbit_add_queue.py &&
+              python3 -m pytest -v"
