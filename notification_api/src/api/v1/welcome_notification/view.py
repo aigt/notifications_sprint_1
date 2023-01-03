@@ -15,7 +15,7 @@ async def welcome(
     notify_data: WelcomeNotifyRequest,
     service: WelcomeService = Depends(get_welcome_service),
 ) -> WelcomeNotifyResponse:
-    """Добавить закладку пользователю.
+    """Запросить отправку уведомления welcome для пользователя.
 
     Args:
         notify_data (WelcomeNotifyRequest): Данные пользователя которому будут отправлено Welcome уведомление
