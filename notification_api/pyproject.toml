@@ -12,6 +12,7 @@ gunicorn = "^20.1.0"
 orjson = "^3.8.3"
 python = "^3.10"
 uvicorn = {extras = ["standard"], version = "^0.20.0"}
+pydantic = {version = "^1.10.4", extras = ["email"]}
 
 [tool.poetry.group.dev.dependencies]
 black = "^22.10.0"

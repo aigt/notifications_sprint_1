@@ -21,6 +21,12 @@ class Settings(BaseSettings):
     max_page_size: int = Field(50)
     default_page_size: int = Field(5)
 
+    # Настройки Rabbitmq
+    rb_host: str = Field("localhost")
+    rb_port: int = Field(5672)
+    rb_user: str = Field("user")
+    rb_password: str = Field("pass")
+
 
 @lru_cache()
 def get_settings() -> Settings:
