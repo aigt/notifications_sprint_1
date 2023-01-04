@@ -101,9 +101,9 @@ jobs:
           - service_name: "worker"
             path: "tests/integration/worker"
             app_path: "worker"
-            history_db_env: ${{ secrets.HISTORY_DB_ENV_FILE }}
-            templates_db_env: ${{ secrets.TEMPLATES_DB_ENV_FILE }}
-            worker_env: ${{ secrets.WORKER_ENV_FILE }}
+            history_db_env: true
+            templates_db_env: true
+            worker_env: true
           - service_name: "api"
             path: "tests/integration/api"
             app_path: "notification_api"
@@ -131,17 +131,17 @@ jobs:
       - name: "Create history_db.env file"
         if: ${{ matrix.history_db_env }}
         run: |
-          echo "${{ matrix.history_db_env }}" > ${{ matrix.path }}/env_files/history_db.env
+          echo "${{ secrets.HISTORY_DB_ENV_FILE }}" > ${{ matrix.path }}/env_files/history_db.env
 
       - name: "Create templates_db.env file"
         if: ${{ matrix.templates_db_env }}
         run: |
-          echo "${{ matrix.templates_db_env }}" > ${{ matrix.path }}/env_files/templates_db.env
+          echo "${{ secrets.TEMPLATES_DB_ENV_FILE }}" > ${{ matrix.path }}/env_files/templates_db.env
 
       - name: "Create worker.env file"
         if: ${{ matrix.worker_env }}
         run: |
-          echo "${{ matrix.worker_env }}" > ${{ matrix.path }}/env_files/worker.env
+          echo "${{ secrets.WORKER_ENV_FILE }}" > ${{ matrix.path }}/env_files/worker.env
 
       - name: Run tests
         working-directory: ${{ matrix.path }}
