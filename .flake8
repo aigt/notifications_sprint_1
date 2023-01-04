@@ -46,6 +46,7 @@ per-file-ignores =
     tests/integration: WPS401
     notification_handler/src/core/logger.py: WPS323, WPS407
     notification_handler/src/core/settings.py: WPS432 WPS323
+    notification_handler/src/models/notification.py: WPS110
 
 
 exclude =
