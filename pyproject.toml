@@ -15,6 +15,7 @@ profile = "black"
 src_paths = [
     "worker/src",
 ]
+skip = ["notification_handler/src/main.py"]
 
 [tool.mypy]
 python_version = "3.10"
