@@ -127,13 +127,13 @@ jobs:
 
       - if: steps.check_file_changed.outputs.files_changed == 'False'
         run: |
-          echo "The files under tests are not changed ( ${{ steps.check_file_changed.outputs.files_changed }} )"
+          echo "The files under tests are not changed (files_changed=${{ steps.check_file_changed.outputs.files_changed }})."
           exit 0
 
       - shell: pwsh
         # steps.<step_id>.outputs.<output name>
         if: steps.check_file_changed.outputs.files_changed == 'True'
-        run: echo "The files under tests are changed."
+        run: echo "The files under tests are changed (files_changed=${{ steps.check_file_changed.outputs.files_changed }})."
 
       - name: "Create history_db.env file"
         if: ${{ matrix.history_db_env }}
@@ -151,6 +151,7 @@ jobs:
           echo "${{ secrets.WORKER_ENV_FILE }}" > ${{ matrix.path }}/env_files/worker.env
 
       - name: Run tests
+        if: steps.check_file_changed.outputs.files_changed == 'True'
         working-directory: ${{ matrix.path }}
         run: |
           docker-compose up --build --abort-on-container-exit --exit-code-from tests
