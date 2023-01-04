@@ -16,6 +16,7 @@ def add_queue() -> None:
     )
     channel = connection.channel()
     channel.queue_declare("Notification")
+    channel.queue_declare("Generator")
     connection.close()
 
 
