@@ -123,7 +123,7 @@ jobs:
           $HasDiff = $SourceDiff.Length -gt 0
 
           # Set the output named "files_changed"
-          Write-Host "::set-output name=docs_changed::$HasDiff"
+          Write-Host "::set-output name=files_changed::$HasDiff"
 
       - shell: pwsh
         # steps.<step_id>.outputs.<output name>
