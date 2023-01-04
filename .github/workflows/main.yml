@@ -92,7 +92,7 @@ jobs:
           path: reports/
 
   tests:
-    name: Mypy type checking
+    name: Tests
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -109,7 +109,9 @@ jobs:
             app_path: "notification_api"
     steps:
       - uses: actions/checkout@v3
-
+        with:
+          # Checkout as many commits as needed for the diff
+          fetch-depth: 2
       - shell: pwsh
         # Give an id to the step, so we can reference it later
         id: check_file_changed
