@@ -127,8 +127,15 @@ jobs:
 
       - shell: pwsh
         # steps.<step_id>.outputs.<output name>
-        # if: steps.check_file_changed.outputs.files_changed == 'True'
-        run: echo "The files under tests are changed - ${{ steps.check_file_changed.outputs.files_changed }}"
+        if: steps.check_file_changed.outputs.files_changed == 'False'
+        run: |
+          echo "The files under tests are not changed ( ${{ steps.check_file_changed.outputs.files_changed }} )"
+          exit 0
+
+      - shell: pwsh
+        # steps.<step_id>.outputs.<output name>
+        if: steps.check_file_changed.outputs.files_changed == 'True'
+        run: echo "The files under tests are changed."
 
       - name: "Create history_db.env file"
         if: ${{ matrix.history_db_env }}
