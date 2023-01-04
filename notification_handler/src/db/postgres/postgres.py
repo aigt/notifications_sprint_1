@@ -2,6 +2,7 @@ from functools import lru_cache
 from typing import Optional
 
 from db.base import BaseDatabase
+from models.notification import Notification
 from psycopg import Connection
 
 postgres_con: Optional[Connection] = None
@@ -23,12 +24,19 @@ class Postgres(BaseDatabase):
     def __init__(self, connect: Connection):
         self._con = connect
 
+    def add_notification_in_info_table(self, notification: Notification) -> None:
+        """Добавление данных в таблицу info.
+
+        Args:
+            notification(Notification): Данные для добавления в таблицу
+        """
+
 
 @lru_cache()
 def get_postgres() -> Postgres:
     """Фабрика для получения экземпляра класса Postgres.
 
     Returns:
-        Postgres(Postgres): соединение с postgres
+        Postgres(Postgres): экземпляр для работы с Postgres
     """
     return Postgres(get_postgres_con())

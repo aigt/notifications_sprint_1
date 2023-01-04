@@ -1,9 +1,9 @@
 from functools import lru_cache
 from typing import Callable, Optional
 
+from db.base import BaseQueue
+from models.notification import Notification
 from pika import BlockingConnection
-from pika.adapters.blocking_connection import BlockingChannel
-from pika.spec import Basic, BasicProperties
 
 from core.settings import get_settings
 
@@ -22,7 +22,7 @@ def get_rabbit_con() -> BlockingConnection:
     return rabbitmq_con
 
 
-class Rabbit:
+class Rabbit(BaseQueue):
     """Класс для работы с RabbitMQ."""
 
     def __init__(self, connect: BlockingConnection):
@@ -35,22 +35,28 @@ class Rabbit:
         Args:
             callback(Callable): Функция обработчик входящих данных
         """
-        self._channel.basic_consume(settings.rb_queue_name, callback)
+        self._channel.basic_consume(settings.rb_receiving_queue, callback)
         self._channel.start_consuming()
 
+    def send(self, queue: str, notification: Notification) -> None:
+        """Отправление данных в очередь.
 
-def callback(
-    ch: BlockingChannel,
-    method: Basic.Deliver,
-    properties: BasicProperties,
-    body: bytes,
-) -> None:
-    """Обработка поступающих данных.
+        Args:
+            queue(str): Имя очереди
+            notification(Notification): данные для отправки
+        """
+        self._channel.basic_publish(
+            exchange="",
+            routing_key=settings.rb_transfer_queue,
+            body=notification.json(),
+        )
 
-    Args:
-        ch(BlockingChannel): Rabbitmq канал
-        method(Basic.Deliver): Доставщик
-        properties(BasicProperties): Свойства
-        body(bytes): Тело данных из очереди
+
+@lru_cache()
+def get_rabbit() -> Rabbit:
+    """Фабрика для получения экземпляра класса Rabbit.
+
+    Returns:
+        Rabbit(Rabbit): экземпляр для работы с RabbitMQ
     """
-    ch.basic_ack(delivery_tag=method.delivery_tag)
+    return Rabbit(get_rabbit_con())
