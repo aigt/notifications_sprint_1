@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     # Настройки Postgres
     postgres_db: str = Field("notifications")
     postgres_user: str = Field("app")
-    postgres_password: str = Field("pass")
+    postgres_password: str = Field("postgres")
     postgres_host: str = Field("localhost")
     postgres_port: int = Field(5432)
 
