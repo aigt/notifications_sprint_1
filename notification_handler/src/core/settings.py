@@ -20,6 +20,7 @@ class Settings(BaseSettings):
     rb_port: int = Field(5672)
     rb_user: str = Field("user")
     rb_password: str = Field("pass")
+    rb_queue_name: str = Field("Notification")
 
 
 @lru_cache()
