@@ -59,7 +59,7 @@ jobs:
           recursive: true
 
   mypy:
-    name: Mypy type checking
+    name: Mypy python-${{ matrix.python-version }} type checking
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -92,19 +92,19 @@ jobs:
           path: reports/
 
   tests:
-    name: Tests
+    name: Tests - ${{ matrix.service_name }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         include:
-          - service_name: "worker"
+          - service_name: "Worker"
             path: "tests/integration/worker"
             app_path: "worker"
             history_db_env: true
             templates_db_env: true
             worker_env: true
-          - service_name: "api"
+          - service_name: "Notifications API"
             path: "tests/integration/api"
             app_path: "notification_api"
     steps:
@@ -113,7 +113,6 @@ jobs:
           # Checkout as many commits as needed for the diff
           fetch-depth: 2
       - shell: pwsh
-        # Give an id to the step, so we can reference it later
         id: check_file_changed
         run: |
           # Diff HEAD with the previous commit
@@ -125,15 +124,8 @@ jobs:
           # Set the output named "files_changed"
           Write-Host "::set-output name=files_changed::$HasDiff"
 
-      - if: steps.check_file_changed.outputs.files_changed == 'False'
-        run: |
-          echo "The files under tests are not changed (files_changed=${{ steps.check_file_changed.outputs.files_changed }})."
-          exit 0
-
-      - shell: pwsh
-        # steps.<step_id>.outputs.<output name>
-        if: steps.check_file_changed.outputs.files_changed == 'True'
-        run: echo "The files under tests are changed (files_changed=${{ steps.check_file_changed.outputs.files_changed }})."
+      - name: "Files changed check result"
+        run: echo "The files under tests are changed - ${{ steps.check_file_changed.outputs.files_changed }}."
 
       - name: "Create history_db.env file"
         if: ${{ matrix.history_db_env }}
