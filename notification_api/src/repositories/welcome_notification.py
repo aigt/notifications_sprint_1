@@ -3,10 +3,11 @@ from functools import lru_cache
 import aio_pika
 import orjson
 from aio_pika import Connection
-from db.rabbit import get_rabbit
 from fastapi import Depends
-from models.model_for_queue import Notification
 from repositories.base_repository import BaseRepository
+
+from db.rabbit import get_rabbit
+from models.model_for_queue import Notification
 
 
 class WelcomeRepository(BaseRepository):
