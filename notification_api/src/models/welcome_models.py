@@ -1,9 +1,9 @@
 from uuid import UUID
 
 from pydantic import EmailStr, Field
-from services.orjson import OrjsonModel
 
 from core.responses import NOTIFICATION_ADDED
+from services.orjson import OrjsonModel
 
 
 class WelcomeNotifyRequest(OrjsonModel):

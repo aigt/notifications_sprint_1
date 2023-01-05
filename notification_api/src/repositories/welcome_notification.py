@@ -5,6 +5,7 @@ from aio_pika import Connection
 from db.rabbit import get_rabbit
 from fastapi import Depends
 from models.model_for_queue import Notification
+
 from repositories.base_repository import BaseRepository
 
 
