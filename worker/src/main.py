@@ -1,15 +1,14 @@
 import logging
-from time import sleep
 
-from core import logger
+from core import builder, logger
 
 
 def main() -> None:
-    """Точка входа в приложение тест."""
+    """Точка входа в приложение."""
+    logging.info("Starting worker")
     logger.configure_logging()
-    while True:
-        logging.info("Hellow from worker")
-        sleep(15)  # noqa: WPS432
+    app = builder.build()
+    app.run()
 
 
 if __name__ == "__main__":
