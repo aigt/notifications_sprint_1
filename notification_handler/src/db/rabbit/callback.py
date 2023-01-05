@@ -19,7 +19,7 @@ def callback(
         properties(BasicProperties): Свойства
         body(bytes): Тело данных из очереди
     """
-    notification = orjson.loads(orjson.loads(body))
+    notification = orjson.loads(body)
     meta = notification.get("meta")
     notification = Notification(
         meta=Meta(**meta),

@@ -1,7 +1,6 @@
 from functools import lru_cache
 
 import aio_pika
-import orjson
 from aio_pika import Connection
 from db.rabbit import get_rabbit
 from fastapi import Depends
@@ -20,7 +19,7 @@ class WelcomeRepository(BaseRepository):
         """
         channel = await self.queue.channel()
         await channel.default_exchange.publish(
-            aio_pika.Message(body=orjson.dumps(notify.json())),
+            aio_pika.Message(body=notify.json().encode()),
             routing_key=self.queue_name,
         )
 

@@ -6,6 +6,7 @@ from db.rabbit.rabbitmq import get_rabbit
 
 from core.logger import configure_logging
 from core.settings import get_settings
+from core.add_queue import add_queue
 
 settings = get_settings()
 configure_logging()
@@ -14,6 +15,7 @@ logger = logging.getLogger(__name__)
 
 def main() -> None:
     """Точка входа в приложение."""
+    add_queue()
     rabbit = get_rabbit()
     rabbit.start_consume(callback)
 
