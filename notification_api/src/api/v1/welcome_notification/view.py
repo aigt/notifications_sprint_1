@@ -1,8 +1,7 @@
 from api.v1.welcome_notification.services import WelcomeService, get_welcome_service
 from fastapi import APIRouter, Depends
-from starlette import status
-
 from models.welcome_models import WelcomeNotifyRequest, WelcomeNotifyResponse
+from starlette import status
 
 welcome_router = APIRouter()
 

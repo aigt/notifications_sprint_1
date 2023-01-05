@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 
 from aio_pika import Connection
-
 from models.model_for_queue import Notification
 
 
