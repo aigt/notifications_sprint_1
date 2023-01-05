@@ -2,7 +2,7 @@ from logging import config as logging_config
 
 
 def configure_logging() -> None:
-    """Конфигурировать логер."""
+    """Конфигурация логгера."""
     log_format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     log_default_handlers = [
         "console",

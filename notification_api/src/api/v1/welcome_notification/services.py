@@ -1,10 +1,11 @@
 from functools import lru_cache
 
 from fastapi import Depends
-from models.model_for_queue import Meta, Notification
-from models.welcome_models import WelcomeNotifyRequest
 from repositories.base_repository import BaseRepository
 from repositories.welcome_notification import WelcomeRepository, get_welcome_repo
+
+from models.model_for_queue import Meta, Notification
+from models.welcome_models import WelcomeNotifyRequest
 
 
 class WelcomeService:

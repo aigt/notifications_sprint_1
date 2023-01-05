@@ -1,11 +1,11 @@
 from functools import lru_cache
 from typing import Callable, Optional
 
-from db.base import BaseQueue
-from models.notification import Notification
 from pika import BlockingConnection
 
 from core.settings import get_settings
+from db.base import BaseQueue
+from models.notification import Notification
 
 rabbitmq_con: Optional[BlockingConnection] = None
 

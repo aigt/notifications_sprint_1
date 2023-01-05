@@ -1,8 +1,9 @@
 import orjson
-from models.notification import Meta, Notification
-from notification_handler.notification_handler import NotificationHandler
 from pika.adapters.blocking_connection import BlockingChannel
 from pika.spec import Basic, BasicProperties
+
+from models.notification import Meta, Notification
+from notification_handler.notification_handler import NotificationHandler
 
 
 def callback(

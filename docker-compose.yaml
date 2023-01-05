@@ -122,12 +122,36 @@ services:
     networks:
       - notifications_net
 
+  history_db:
+    image: postgres:15.0-alpine
+    volumes:
+      - history_vol:/var/lib/postgresql/data/
+    env_file:
+      - env_files/history_db.env
+    environment:
+      - POSTGRES_HOST=history_db
+      - POSTGRES_PORT=5432
+    expose:
+      - "5432"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -d $$POSTGRES_DB -h $$POSTGRES_HOST -p $$POSTGRES_PORT -U $$POSTGRES_USER"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - history_net
+
 volumes:
   mongo_vol:
   rabbitmq_vol:
   templates_vol:
   users_vol:
   notifications_vol:
+  history_net:
 
 
 networks:
@@ -136,3 +160,4 @@ networks:
   templates_net:
   users_net:
   notifications_net:
+  history_vol:

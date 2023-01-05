@@ -1,8 +1,9 @@
 import enum
 from typing import Any, Optional
 
-from models.orjson import OrjsonModel
 from pydantic import EmailStr
+
+from models.orjson import OrjsonModel
 
 
 class NotificationUrgency(enum.Enum):

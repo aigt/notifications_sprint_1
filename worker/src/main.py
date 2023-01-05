@@ -5,7 +5,7 @@ from core import logger
 
 
 def main() -> None:
-    """Точка входа в приложение."""
+    """Точка входа в приложение тест."""
     logger.configure_logging()
     while True:
         logging.info("Hellow from worker")
