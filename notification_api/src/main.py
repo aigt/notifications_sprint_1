@@ -1,11 +1,11 @@
 import backoff
 import uvicorn
 from aio_pika import connect_robust
-from api import health
-from api.v1.api import api_router
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 
+from api import health
+from api.v1.api import api_router
 from core.config import get_settings
 from core.openapi_docs import API_DESCRIPTION, CONTACT
 from db import rabbit

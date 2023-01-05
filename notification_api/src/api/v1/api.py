@@ -1,5 +1,6 @@
-from api.v1.welcome_notification.view import welcome_router
 from fastapi import APIRouter
+
+from api.v1.welcome_notification.view import welcome_router
 
 api_router = APIRouter()
 

@@ -106,15 +106,15 @@ jobs:
             history_db_env: true
             templates_db_env: true
             worker_env: true
-            
+
           - service_name: "Notifications API"
             path: "tests/integration/api"
             app_path: "notification_api"
-            
+
           - service_name: "Notification Handler"
             path: "tests/integration/notify_handler"
             app_path: "notification_handler"
-            
+
     steps:
       - uses: actions/checkout@v3
         with:
