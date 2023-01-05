@@ -3,7 +3,6 @@ from typing import Dict
 from pika.adapters.blocking_connection import BlockingChannel
 from pika.spec import Basic, BasicProperties
 
-from brokers.rabbit import RabbitMQ
 from errors.exceptions import NoRequiredWorkerError
 from workers.worker import TargetWorkerName, Worker, WorkerMessage
 
@@ -15,22 +14,25 @@ class Subscriber:
         self,
         workers: Dict[TargetWorkerName, Worker],
         history_worker: Worker,
-        rabbit: RabbitMQ,
+        subscriber_channel: BlockingChannel,
+        subscriber_queue_name: str,
     ) -> None:
         self._workers = workers
         self._history_worker = history_worker
-        self._rabbit = rabbit
+        self._subscriber_channel = subscriber_channel
+        self._subscriber_queue_name = subscriber_queue_name
 
     def run(self) -> None:
         """Подписаться на поступающие задачи."""
-        self._rabbit.connect()
-        channel = self._rabbit.connection.channel()
-        channel.basic_consume(queue="test", on_message_callback=self._on_message)
+        self._subscriber_channel.basic_consume(
+            queue=self._subscriber_queue_name,
+            on_message_callback=self._on_message,
+        )
         try:
-            channel.start_consuming()
+            self._subscriber_channel.start_consuming()
         except Exception:
-            channel.stop_consuming()
-        channel.close(reply_code=0, reply_text="Normal shutdown")
+            self._subscriber_channel.stop_consuming()
+        self._subscriber_channel.close(reply_code=0, reply_text="Normal shutdown")
 
     def _on_message(
         self,
