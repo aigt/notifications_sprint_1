@@ -19,7 +19,7 @@ def test_welcome_200(http_con: Session, rabbit_channel: BlockingChannel) -> None
     assert response.status_code == HTTPStatus.OK
 
     _, _, payload = rabbit_channel.basic_get("Notification")
-    payload = orjson.loads(orjson.loads(payload))
+    payload = orjson.loads(payload)
     assert payload.get("type") == "welcome"
 
     meta = payload.get("meta")
