@@ -1,4 +1,4 @@
-from typing import Dict, cast
+from typing import Dict
 
 from pika.adapters.blocking_connection import BlockingChannel
 from pika.spec import Basic, BasicProperties
@@ -50,16 +50,16 @@ class Subscriber:
         Raises:
             NoRequiredWorkerError: Если целевой воркер отсутствует.
         """
-        message = cast(WorkerMessage, body.decode())
-        target_worker = message["target"]
-        if target_worker not in self._workers:
-            raise NoRequiredWorkerError(
-                "No required worker {target_worker}".format(
-                    target_worker=target_worker,
-                ),
-            )
-        worker = self._workers[target_worker]
-        worker.run(message)
+        message = WorkerMessage.parse_raw(body.decode())
+        for target_worker in message.targets:
+            if target_worker not in self._workers:
+                raise NoRequiredWorkerError(
+                    "No required worker {target_worker}".format(
+                        target_worker=target_worker,
+                    ),
+                )
+            worker = self._workers[target_worker]
+            worker.run(message)
         self._history_worker.run(message)
         channel.basic_ack(delivery_tag=method_frame.delivery_tag)
 

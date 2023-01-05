@@ -1,22 +1,24 @@
 from abc import ABC, abstractmethod
-from typing import Dict, List, NewType, TypedDict
+from typing import Dict, List, NewType, Optional
+
+from pydantic import BaseModel, Field
 
 TargetWorkerName = NewType("TargetWorkerName", str)
 MessageFieldName = NewType("MessageFieldName", str)
 MessageFieldValue = NewType("MessageFieldValue", str)
 
 
-class WorkerMessage(TypedDict):
+class WorkerMessage(BaseModel):
     """Сообщение с задачей для воркера."""
 
     # Целевой воркер для обработки
-    target: List[TargetWorkerName]
+    targets: List[TargetWorkerName] = Field(default=[])
     # Адрес, куда отправить письмо
-    email: str
+    email: Optional[str]
     # Шаблон для данной письма
     template: str
     # Набор стандартных полей для шаблона
-    fields: Dict[MessageFieldName, MessageFieldValue]
+    fields: Dict[MessageFieldName, MessageFieldValue] = Field(default={})
 
 
 class Worker(ABC):
