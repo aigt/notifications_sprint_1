@@ -34,7 +34,11 @@ def build() -> WorkerApp:
     rabbit.connect()
     rabbit_connection = rabbit.connection
     email_worker_channel = rabbit_connection.channel()
+    email_worker_channel.queue_declare(queue="email", durable=True)
+    email_worker_channel.exchange_declare(exchange="email", durable=True)
     subscriber_channel = rabbit_connection.channel()
+    subscriber_channel.queue_declare(queue="worker", durable=True)
+    subscriber_channel.exchange_declare(exchange="worker", durable=True)
 
     email_worker = EmailWorker(
         email_rabbit_channel=email_worker_channel,
