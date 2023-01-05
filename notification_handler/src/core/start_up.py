@@ -1,12 +1,12 @@
 import backoff
 import pika
 import psycopg
-from db.rabbit import rabbitmq
 from pika import BlockingConnection, ConnectionParameters
 from pika.exceptions import AMQPConnectionError
 
 from core.settings import get_settings
 from db.postgres import postgres
+from db.rabbit import rabbitmq
 
 settings = get_settings()
 

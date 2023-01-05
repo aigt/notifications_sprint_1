@@ -1,10 +1,11 @@
 import time
 
 import orjson
-from models.notification import Meta, Notification
 from pika.adapters.blocking_connection import BlockingChannel
 from testdata.notifications import welcome_1
 from utils.send_data import send
+
+from models.notification import Meta, Notification
 
 
 def test_welcome(rabbit_channel: BlockingChannel) -> None:
