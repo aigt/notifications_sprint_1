@@ -28,7 +28,7 @@ def configure_logging() -> None:
             },
         },
         "root": {
-            "level": "DEBUG",
+            "level": "INFO",
             "formatter": "verbose",
             "handlers": log_default_handlers,
         },
