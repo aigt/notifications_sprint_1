@@ -3,4 +3,4 @@ class RabbitMQConnectionIsNotInitializedError(Exception):
 
 
 class NoRequiredWorkerError(Exception):
-    """Соединение RabbitMQ не инициализировано."""
+    """Нет необходимых воркеров для сообщения."""
