@@ -62,8 +62,8 @@ class RabbitMQ:
                 break
             except AMQPError as ex:
                 logging.info(
-                    "Connection #{try_num} faild (retry in 1 second)",
-                    extra={"try_num": try_num},
+                    "Connection #%s faild (retry in 1 second)",  # noqa: WPS323
+                    try_num,
                 )
                 try_num += 1
                 if try_num >= self._max_tries_to_connect:
