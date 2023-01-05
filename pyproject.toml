@@ -14,8 +14,8 @@ include = '\.pyi?$'
 profile = "black"
 src_paths = [
     "worker/src",
+    "notification_handler/src",
 ]
-skip = ["notification_handler/src/main.py"]
 
 [tool.mypy]
 python_version = "3.10"

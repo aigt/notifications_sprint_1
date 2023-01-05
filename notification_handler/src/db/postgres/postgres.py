@@ -1,9 +1,10 @@
 from functools import lru_cache
 from typing import Optional
 
+from psycopg import Connection
+
 from db.base import BaseDatabase
 from models.notification import Notification
-from psycopg import Connection
 
 postgres_con: Optional[Connection] = None
 

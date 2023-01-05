@@ -1,9 +1,8 @@
+from core.settings import get_settings
 from db.base import BaseDatabase, BaseQueue
 from db.postgres.postgres import get_postgres
 from db.rabbit.rabbitmq import get_rabbit
 from models.notification import Notification, NotificationType
-
-from core.settings import get_settings
 
 settings = get_settings()
 
