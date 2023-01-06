@@ -4,7 +4,7 @@ from typing import Optional
 
 from pika import BlockingConnection, ConnectionParameters
 from pika.credentials import PlainCredentials
-from pika.exceptions import AMQPError
+from pika.exceptions import AMQPConnectionError
 
 from errors.exceptions import RabbitMQConnectionIsNotInitializedError
 
@@ -46,7 +46,7 @@ class RabbitMQ:
         """Установить соединение с RabbitMQ.
 
         Raises:
-            AMQPError: Ошибка соединения если количество попыток истекло.
+            AMQPConnectionError: Ошибка соединения если количество попыток истекло.
         """
         logging.info("Connecting to RabbitMQ")
         connection = None
@@ -60,14 +60,15 @@ class RabbitMQ:
             try:
                 self._connection = BlockingConnection(conn_params)
                 break
-            except AMQPError as ex:
+            except AMQPConnectionError as connection_ex:
                 logging.info(
-                    "Connection #%s faild (retry in 1 second)",  # noqa: WPS323
+                    "Connection #%s faild (retry in %s second)",  # noqa: WPS323
                     try_num,
+                    self._connect_retry_period,
                 )
                 try_num += 1
                 if try_num >= self._max_tries_to_connect:
-                    raise ex
+                    raise connection_ex
                 sleep(self._connect_retry_period)
         logging.info("RabbitMQ connected")
 

@@ -10,7 +10,7 @@ def configure_logging() -> None:
 
     logging = {
         "version": 1,
-        "disable_existing_loggers": False,
+        "disable_existing_loggers": True,
         "formatters": {
             "verbose": {"format": log_format},
         },
