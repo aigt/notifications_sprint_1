@@ -70,6 +70,48 @@
 
 Auth-сервис при регистрации пользователя отправляет задачу в API сервиса уведомлений на отправку мгновенных массовых уведомлений с указаним типа оповещения welcome и указанием данных пользователя.
 
+```mermaid
+
+sequenceDiagram
+  actor Client as Auth Service
+  participant API
+  participant NH as Notification Handler
+  participant Generator
+  participant Worker
+  participant TDB as Templates DB
+  participant HDB as Hystory DB
+  participant EH as Email Handler
+  participant Broker
+
+  Client ->> +API: Send Welcome Notification
+  API ->> -Broker: notifications queue
+  Note over Broker: Wait queue
+  Broker ->> +NH: Welcome Notification
+  NH ->> -Broker: generator queue
+  Note over Broker: Wait queue
+  Broker ->> +Generator: Welcome Notification
+  Generator ->> -Broker: worker queue
+  Note over Broker: Wait queue
+  Broker ->> +Worker: Task
+  alt in cach
+    Worker->>Worker: Get welcome template
+  else not in cache
+    Worker->>TDB: Get welcome template
+    TDB ->> Worker: Welcome template
+    Worker->>Worker: Cache welcome template
+  end
+  Worker->>Worker: Render history
+  Worker->>+HDB: Publish history
+  HDB->>-Worker: OK
+  Worker->>Worker: Render email
+  Worker->>-Broker: email queue
+  Note over Broker: Wait queue
+  Broker ->> EH: Task
+  Note over EH: Send email to user
+
+```
+
+
 
 ### Вышла новая серия сериала
 
@@ -241,7 +283,7 @@ worker
   // Для сохранения в историю оповещений
   "user_id": "UUID",
 
-  // Шаблон для данной письма
+  // Шаблон для данного письма
   "template": "template_name",
 
   // Набор стандартных полей для шаблона
@@ -270,13 +312,16 @@ email
 ```
 
 
-## Шаблоны писем
+## Шаблоны оповещений
 
 Шаблоны писем используют синтаксис [jinja](https://jinja.palletsprojects.com/)
 
 
 ### Приветственные письма после регистрации пользователя
 
+Имя шаблона: `welcome`
+
+Email:
 ```html
 <!DOCTYPE html>
 <html lang="ru">
@@ -288,9 +333,20 @@ email
 </html>
 ```
 
+History:
+```
+Добро пожаловать!
+
+Привет {{ name }}!
+Рады приветствовать тебя в нашем кинотеатре!
+```
+
 
 ### Информационное письмо
 
+Имя шаблона: `info`
+
+Email:
 ```html
 <!DOCTYPE html>
 <html lang="ru">
@@ -300,4 +356,11 @@ email
   <p>{{ text }}</p>
 </body>
 </html>
+```
+
+History:
+```
+{{ title }}
+
+{{ text }}
 ```
