@@ -16,6 +16,7 @@ src_paths = [
     "worker/src",
     "notification_handler/src",
     "notification_api/src",
+    "generator/src",
 ]
 skip = ["notification_handler/src/main.py"]
 
