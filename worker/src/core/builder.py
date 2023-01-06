@@ -4,6 +4,8 @@ from pika.credentials import PlainCredentials
 
 from brokers.rabbit import RabbitMQ
 from core.config import Settings
+from services.email_publisher import EmailPublisher
+from services.email_render import EmailRender
 from services.subscriber import Subscriber
 from worker_app import WorkerApp
 from workers.email import EmailWorker
@@ -50,11 +52,17 @@ def build() -> WorkerApp:
         durable=True,
     )
 
-    email_worker = EmailWorker(
+    email_publisher = EmailPublisher(
         email_rabbit_channel=email_worker_channel,
         exchange=settings.rb_email_exchange_name,
         queue=settings.rb_email_queue_name,
     )
+    email_render = EmailRender()
+    email_worker = EmailWorker(
+        email_publisher=email_publisher,
+        email_render=email_render,
+    )
+
     workers: Dict[TargetWorkerName, Worker] = {
         "email": email_worker,
     }

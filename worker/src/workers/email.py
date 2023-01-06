@@ -1,8 +1,6 @@
-from jinja2 import BaseLoader, Environment
-from pika.adapters.blocking_connection import BlockingChannel
-from pika.spec import BasicProperties
-
-from services import template
+from errors.exceptions import NoEmailForEmailWorkerError
+from services.email_publisher import EmailPublisher
+from services.email_render import EmailRender
 from workers.worker import Worker, WorkerMessage
 
 
@@ -11,47 +9,30 @@ class EmailWorker(Worker):
 
     def __init__(
         self,
-        email_rabbit_channel: BlockingChannel,
-        exchange: str,
-        queue: str,
+        email_publisher: EmailPublisher,
+        email_render: EmailRender,
     ) -> None:
-        self._channel = email_rabbit_channel
-        self._exchange = exchange
-        self._queue = queue
+        self._email_publisher = email_publisher
+        self._email_render = email_render
 
     def run(self, message: WorkerMessage) -> None:
         """Обработать сообщение.
 
         Args:
             message (WorkerMessage): Сообщение для обработки.
+
+        Raises:
+            NoEmailForEmailWorkerError: Если не указан email
         """
-        rendered_email = self.render_email(message)
-        self.publish_email(rendered_email)
+        if not message.email:
+            raise NoEmailForEmailWorkerError()
 
-    def render_email(self, message: WorkerMessage) -> str:
-        """Рендерить Email.
-
-        Args:
-            message (WorkerMessage): Сообщение для обработки.
-
-        Returns:
-            str: Письмо.
-        """
-        str_template = template.get(message.template)
-        jinja_template = Environment(loader=BaseLoader(), autoescape=True).from_string(
-            str_template,
+        rendered_email = self._email_render.render_email(
+            template=message.template,
+            fields=message.fields,
         )
-        return jinja_template.render(**message.fields)  # type: ignore
 
-    def publish_email(self, email: str) -> None:
-        """Добавить в очередь на отправку письмо.
-
-        Args:
-            email (str): Письмо.
-        """
-        self._channel.basic_publish(
-            exchange=self._exchange,
-            routing_key=self._queue,
-            body=email,
-            properties=BasicProperties(content_type="text/plain"),
+        self._email_publisher.publish(
+            email=message.email,
+            email_content=rendered_email,
         )
