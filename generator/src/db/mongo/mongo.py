@@ -1,9 +1,9 @@
 from typing import Optional
 
-from db.base import BaseDocumentData
 from pymongo import MongoClient
 
 from core.settings import get_settings
+from db.base import BaseDocumentData
 
 settings = get_settings()
 

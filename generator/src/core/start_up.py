@@ -1,15 +1,15 @@
 import backoff
 import pika
 import psycopg
-from db.mongo import mongo
-from db.rabbit import rabbitmq
 from pika import BlockingConnection, ConnectionParameters
 from pika.exceptions import AMQPConnectionError
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure
 
 from core.settings import get_settings
+from db.mongo import mongo
 from db.postgres import postgres
+from db.rabbit import rabbitmq
 
 settings = get_settings()
 

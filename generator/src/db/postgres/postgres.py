@@ -1,7 +1,8 @@
 from typing import Optional
 
-from db.base import BaseDatabase
 from psycopg import Connection
+
+from db.base import BaseDatabase
 
 postgres_con: Optional[Connection] = None
 

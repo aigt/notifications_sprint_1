@@ -1,10 +1,10 @@
 from typing import Callable, Optional
 
-from db.base import BaseQueue
-from models.notifications import NotificationForWorker
 from pika import BlockingConnection
 
 from core.settings import get_settings
+from db.base import BaseQueue
+from models.notifications import NotificationForWorker
 
 rabbitmq_con: Optional[BlockingConnection] = None
 
