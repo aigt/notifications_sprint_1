@@ -33,29 +33,41 @@ def build() -> WorkerApp:
     )
     rabbit.connect()
     rabbit_connection = rabbit.connection
+
     email_worker_channel = rabbit_connection.channel()
-    email_worker_channel.queue_declare(queue="email", durable=True)
-    email_worker_channel.exchange_declare(exchange="email", durable=True)
+    email_worker_channel.exchange_declare(
+        exchange=settings.rb_email_exchange_name,
+        durable=True,
+    )
+    email_worker_channel.queue_declare(
+        queue=settings.rb_email_queue_name,
+        durable=True,
+    )
+
     subscriber_channel = rabbit_connection.channel()
-    subscriber_channel.queue_declare(queue="worker", durable=True)
-    subscriber_channel.exchange_declare(exchange="worker", durable=True)
+    subscriber_channel.queue_declare(
+        queue=settings.rb_worker_queue_name,
+        durable=True,
+    )
 
     email_worker = EmailWorker(
         email_rabbit_channel=email_worker_channel,
-        exchange="email",
-        queue="email",
+        exchange=settings.rb_email_exchange_name,
+        queue=settings.rb_email_queue_name,
     )
-    history_worker = HistoryWorker()
-
     workers: Dict[TargetWorkerName, Worker] = {
         "email": email_worker,
     }
+
+    # history_worker выполняется для всех сообщений, поэтому он устанавливается
+    # отдельно от указываемых в сообщениях
+    history_worker = HistoryWorker()
 
     subscriber = Subscriber(
         workers=workers,
         history_worker=history_worker,
         subscriber_channel=subscriber_channel,
-        subscriber_queue_name="worker",
+        subscriber_queue_name=settings.rb_worker_queue_name,
     )
 
     return WorkerApp(subscriber=subscriber)

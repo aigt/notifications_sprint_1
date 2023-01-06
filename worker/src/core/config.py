@@ -18,3 +18,6 @@ class Settings(BaseSettings):
         default=1,
         description="Период повторных попыток подключения, с",
     )
+    rb_worker_queue_name = "worker"
+    rb_email_exchange_name = "email"
+    rb_email_queue_name = "email"
