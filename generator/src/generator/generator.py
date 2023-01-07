@@ -1,5 +1,12 @@
+from core.settings import get_settings
 from db.base import BaseDatabase, BaseDocumentData, BaseQueue
-from models.notifications import NotificationFromNotifications, NotificationType
+from models.notifications import (
+    NotificationForWorker,
+    NotificationFromNotifications,
+    NotificationType,
+)
+
+settings = get_settings()
 
 
 class Generator:
@@ -25,11 +32,25 @@ class Generator:
             notification(NotificationFromNotifications): Уведомление из очереди.
         """
         if notification.type == NotificationType.welcome:
-            self.create_welcome(notification)
+            self.queue.send(
+                settings.rb_transfer_queue,
+                self.create_welcome(notification),
+            )
 
-    def create_welcome(self, notification: NotificationFromNotifications) -> None:
+    @staticmethod
+    def create_welcome(
+        notification: NotificationFromNotifications,
+    ) -> NotificationForWorker:
         """Подготовка уведомления для welcome сообщения.
 
         Args:
             notification(NotificationFromNotifications): Уведомление
+
+        Returns:
+            NotificationForWorker: данные для отправки в очередь к воркеру.
         """
+        return NotificationForWorker(
+            email=notification.meta.email,
+            template="welcome",
+            fields=notification.fields,
+        )
