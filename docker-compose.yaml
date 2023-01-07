@@ -57,6 +57,7 @@ services:
     image: postgres:15.0-alpine
     volumes:
       - templates_vol:/var/lib/postgresql/data/
+      - ./templates_db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
     env_file:
       - env_files/templates_db.env
     environment:
