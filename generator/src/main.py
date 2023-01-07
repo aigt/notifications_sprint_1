@@ -1,3 +1,4 @@
+from core.add_queue import add_queue
 from core.logger import configure_logging
 from core.start_up import start_up
 from db.rabbit.callback import callback
@@ -12,6 +13,7 @@ def main() -> None:
     В начале создаются все подключения, после запускается ожидание уведомлений из очереди.
     """
     start_up()
+    add_queue()
     rabbit = get_rabbit()
     rabbit.start_consume(callback)
 

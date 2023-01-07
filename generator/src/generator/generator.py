@@ -51,6 +51,6 @@ class Generator:
         """
         return NotificationForWorker(
             email=notification.meta.email,
-            template="welcome",
+            template=notification.type,
             fields=notification.fields,
         )
