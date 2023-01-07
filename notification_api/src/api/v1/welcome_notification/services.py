@@ -32,7 +32,7 @@ class WelcomeService:
                 periodic=False,
             ),
             type="welcome",
-            fileds={"user_name": user_data.user_name},
+            fileds={"user_name": user_data.user_name, "user_id": user_data.user_id},
         )
         await self.repo.add_in_queue(notify_for_queue)
 
