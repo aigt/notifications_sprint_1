@@ -1,4 +1,3 @@
-import uuid
 from http import HTTPStatus
 
 import orjson
@@ -13,7 +12,7 @@ settings = get_settings()
 def test_welcome_200(http_con: Session, rabbit_channel: BlockingChannel) -> None:
     """Проверка работы и возвращаемых данных ендпоинта api/v1/welocme."""
 
-    data = {"user_id": str(uuid.uuid4()), "email": EMAIL}
+    data = {"email": EMAIL, "user_name": "user_name"}
 
     response = http_con.post(f"{settings.url}/welcome", json=data)
     assert response.status_code == HTTPStatus.OK
