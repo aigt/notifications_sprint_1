@@ -58,10 +58,47 @@
 
 Не зависимо от выбранного пользователем способа доставки все оповещения пишутся в базу с историей оповещений откуда потом могут быть доступны через личный кабинет.
 
+Стандартный алгоритм обработки задач для воркера:
+
+```mermaid
+
+sequenceDiagram
+  participant Worker
+  participant TDB as Templates DB
+  participant HDB as Hystory DB
+  participant Broker
+
+  loop Every task for worker in queue
+    Note over Broker: Wait for task
+    Broker ->> +Worker: Task
+    alt in cach
+      Worker->>Worker: Get welcome template
+    else not in cache
+      Worker->>+TDB: Get welcome template
+      TDB->>-Worker: Welcome template
+      Worker->>Worker: Cache welcome template
+    end
+    Worker->>Worker: Render history
+    Worker->>+HDB: Publish history
+    HDB->>-Worker: confirm
+
+    opt If user have target options to deliver message
+      loop For every target way to deliver message
+        Worker->>Worker: Render message
+        Worker->>+Broker: send handler queue
+        Broker->>-Worker: confirm
+        Worker-->-Worker: next target
+        Note over Broker: Task for send handler
+      end
+    end
+  end
+
+```
+
 
 ### Email handler
 
-Отсылает контент на указанный адрес.
+Отсылает полученный контент на указанный адрес.
 
 
 ## Основные сценарии работы с сервисом
@@ -78,8 +115,6 @@ sequenceDiagram
   participant NH as Notification Handler
   participant Generator
   participant Worker
-  participant TDB as Templates DB
-  participant HDB as Hystory DB
   participant EH as Email Handler
   participant Broker
 
@@ -93,17 +128,6 @@ sequenceDiagram
   Generator ->> -Broker: worker queue
   Note over Broker: Wait queue
   Broker ->> +Worker: Task
-  alt in cach
-    Worker->>Worker: Get welcome template
-  else not in cache
-    Worker->>TDB: Get welcome template
-    TDB ->> Worker: Welcome template
-    Worker->>Worker: Cache welcome template
-  end
-  Worker->>Worker: Render history
-  Worker->>+HDB: Publish history
-  HDB->>-Worker: OK
-  Worker->>Worker: Render email
   Worker->>-Broker: email queue
   Note over Broker: Wait queue
   Broker ->> EH: Task
