@@ -1,12 +1,9 @@
 from uuid import UUID
 
-from pydantic import EmailStr
-
 from services.orjson import OrjsonModel
 
 
-class WelcomeNotifyRequest(OrjsonModel):
+class NewSeriesRequest(OrjsonModel):
     """Модель запроса для отправки Welcome письма."""
 
-    user_id: UUID
-    email: EmailStr
+    movie_id: UUID

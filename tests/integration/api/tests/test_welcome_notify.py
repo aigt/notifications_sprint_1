@@ -21,11 +21,11 @@ def test_welcome_200(http_con: Session, rabbit_channel: BlockingChannel) -> None
     _, _, payload = rabbit_channel.basic_get("Notification")
     payload = orjson.loads(payload)
     assert payload.get("type") == "welcome"
+    assert payload.get("email") == EMAIL
 
     meta = payload.get("meta")
     assert meta.get("urgency") == "immediate"
     assert meta.get("scale") == "individual"
-    assert meta.get("email") == EMAIL
     assert meta.get("periodic") is False
 
 

@@ -2,7 +2,13 @@ from functools import lru_cache
 
 from fastapi import Depends
 
-from models.model_for_queue import Meta, Notification
+from models.model_for_queue import (
+    Meta,
+    Notification,
+    NotificationScale,
+    NotificationType,
+    NotificationUrgency,
+)
 from models.welcome_models import WelcomeNotifyRequest
 from repositories.base_repository import BaseRepository
 from repositories.welcome_notification import WelcomeRepository, get_welcome_repo
@@ -26,12 +32,12 @@ class WelcomeService:
         """
         notify_for_queue = Notification(
             meta=Meta(
-                urgency="immediate",
-                scale="individual",
-                email=user_data.email,
+                urgency=NotificationUrgency.immediate,
+                scale=NotificationScale.individual,
                 periodic=False,
             ),
-            type="welcome",
+            type=NotificationType.welcome,
+            email=user_data.email,
         )
         await self.repo.add_in_queue(notify_for_queue)
 
