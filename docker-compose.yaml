@@ -127,6 +127,7 @@ services:
     image: postgres:15.0-alpine
     volumes:
       - history_vol:/var/lib/postgresql/data/
+      - ./history_db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
     env_file:
       - env_files/history_db.env
     environment:
