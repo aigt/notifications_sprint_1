@@ -71,12 +71,14 @@ sequenceDiagram
   loop Every task for worker in queue
     Note over Broker: Wait for task
     Broker ->> +Worker: Task
-    alt in cach
-      Worker->>Worker: Get welcome template
-    else not in cache
-      Worker->>+TDB: Get welcome template
-      TDB->>-Worker: Welcome template
-      Worker->>Worker: Cache welcome template
+    loop For every target
+      alt in cach
+        Worker->>Worker: Get target template
+      else not in cache
+        Worker->>+TDB: Get target template
+        TDB->>-Worker: Template
+        Worker->>Worker: Cache target template
+      end
     end
     Worker->>Worker: Render history
     Worker->>+HDB: Publish history
@@ -142,13 +144,13 @@ sequenceDiagram
   "meta": {
     "urgency": "immidiate",
     "scale": "individual",
-    "periodic": "false",
+    "periodic": "false"
   },
 
   "type": "welcome",
 
   "fields": [
-    "name": "Василий"
+    "name": "Василий",
     "user_id": "UUID",
     "email": "email@host.com"
   ]
@@ -161,7 +163,7 @@ sequenceDiagram
 {
   "targets": [
     "email"
-  ]
+  ],
   "email": "email@host.com",
   "user_id": "UUID",
   "template": "welcome",
