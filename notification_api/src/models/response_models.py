@@ -1,7 +1,7 @@
 from pydantic import Field
 
 from core.responses import NOTIFICATION_ADDED
-from services.orjson import OrjsonModel
+from models.orjson import OrjsonModel
 
 
 class AddNotificationResponse(OrjsonModel):

@@ -4,24 +4,24 @@ from uuid import UUID
 
 from pydantic import EmailStr
 
-from services.orjson import OrjsonModel
+from models.orjson import OrjsonModel
 
 
-class NotificationUrgency(enum.Enum):
+class NotificationUrgency(str, enum.Enum):
     """Типы срочности уведомления."""
 
     immediate = "immediate"
     usual = "usual"
 
 
-class NotificationScale(enum.Enum):
+class NotificationScale(str, enum.Enum):
     """Типы массовости уведомления."""
 
     bulk = "bulk"
     individual = "individual"
 
 
-class NotificationType(enum.Enum):
+class NotificationType(str, enum.Enum):
     """Типы уведомлений."""
 
     show_subs = "show_subs"
