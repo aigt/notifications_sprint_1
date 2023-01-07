@@ -151,7 +151,7 @@ volumes:
   templates_vol:
   users_vol:
   notifications_vol:
-  history_net:
+  history_vol:
 
 
 networks:
@@ -160,4 +160,4 @@ networks:
   templates_net:
   users_net:
   notifications_net:
-  history_vol:
+  history_net:
