@@ -15,10 +15,10 @@ def test_add_notification_200(http_con: Session, rabbit_channel: BlockingChannel
     response = http_con.post(f"{settings.url}/add_notification", json=data_1)
     assert response.status_code == HTTPStatus.OK
 
-    method_frame, _, payload = rabbit_channel.basic_get("notification")
+    method_frame, _, payload = rabbit_channel.basic_get(settings.rb_queue)
     payload = orjson.loads(payload)
     assert payload.get("type") == data_1.get("type")
-    assert payload.get("email") == EMAIL
+    assert payload.get("fields") == data_1.get("fields")
 
     meta = payload.get("meta")
     data_1_meta = data_1.get("meta")
