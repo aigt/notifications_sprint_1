@@ -104,6 +104,7 @@ services:
     image: postgres:15.0-alpine
     volumes:
       - notifications_vol:/var/lib/postgresql/data/
+      - ./notifications_db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
     env_file:
       - env_files/notifications_db.env
     environment:
