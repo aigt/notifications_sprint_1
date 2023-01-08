@@ -52,7 +52,7 @@ class Subscriber:
         Raises:
             NoRequiredWorkerError: Если целевой воркер отсутствует.
         """
-        message = WorkerMessage.parse_raw(body.decode())
+        message = WorkerMessage.parse_raw(body)
         for target_worker in message.targets:
             if target_worker not in self._workers:
                 raise NoRequiredWorkerError(
