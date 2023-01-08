@@ -15,8 +15,8 @@ def add_queue() -> None:
         ConnectionParameters(host=settings.rb_host, port=settings.rb_port, credentials=credentials),
     )
     channel = connection.channel()
-    channel.queue_declare("Notification")
-    channel.queue_declare("Generator")
+    channel.queue_declare("notification")
+    channel.queue_declare("generator")
     connection.close()
 
 

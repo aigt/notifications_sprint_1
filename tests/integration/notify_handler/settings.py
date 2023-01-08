@@ -8,15 +8,18 @@ from pydantic import BaseSettings, Field
 class Settings(BaseSettings):
     """Настройки приложения."""
 
-    container: str = Field("integration")
-
-    url: str = Field("http://localhost:8000/api/v1")
-
     # Настройки Rabbitmq
     rb_host: str = Field("localhost")
     rb_port: int = Field(5672)
     rb_user: str = Field("user")
     rb_password: str = Field("pass")
+
+    # Настройки Postgres
+    postgres_db: str = Field("notifications")
+    postgres_user: str = Field("app")
+    postgres_password: str = Field("postgres")
+    postgres_host: str = Field("localhost")
+    postgres_port: int = Field(5432)
 
 
 @lru_cache()
