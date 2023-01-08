@@ -4,9 +4,9 @@ from pika.credentials import PlainCredentials
 
 from brokers.rabbit import RabbitMQ
 from core.config import Settings
+from services.consumer import Consumer
 from services.email_publisher import EmailPublisher
 from services.email_render import EmailRender
-from services.subscriber import Subscriber
 from worker_app import WorkerApp
 from workers.email import EmailWorker
 from workers.history import HistoryWorker
@@ -71,7 +71,7 @@ def build() -> WorkerApp:
     # отдельно от указываемых в сообщениях
     history_worker = HistoryWorker()
 
-    subscriber = Subscriber(
+    subscriber = Consumer(
         workers=workers,
         history_worker=history_worker,
         subscriber_channel=subscriber_channel,
