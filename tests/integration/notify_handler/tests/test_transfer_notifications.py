@@ -3,6 +3,7 @@ import time
 import orjson
 from pika.adapters.blocking_connection import BlockingChannel
 from psycopg.cursor import Cursor
+from settings import get_settings
 from testdata.notifications import mass_1, personal_1, welcome_1
 from utils.postgres_requests import (
     get_mass_notification,
@@ -13,13 +14,15 @@ from utils.send_data import send
 
 from models.notification import Meta, Notification
 
+settings = get_settings()
+
 
 def test_immediate_notification(rabbit_channel: BlockingChannel) -> None:
     """Проверка доставки immediate уведомления из очереди notification в очередь Generator."""
 
-    send(rabbit_channel, "notification", welcome_1.json().encode())
+    send(rabbit_channel, settings.rb_receiving_queue, welcome_1.json().encode())
     time.sleep(3)
-    method_frame, _, body = rabbit_channel.basic_get("generator")
+    method_frame, _, body = rabbit_channel.basic_get(settings.rb_transfer_queue)
 
     payload = orjson.loads(body)
 
@@ -34,7 +37,7 @@ def test_immediate_notification(rabbit_channel: BlockingChannel) -> None:
 def test_individual_notification(rabbit_channel: BlockingChannel, postgres_cur: Cursor) -> None:
     """Проверка доставки individual уведомления из очереди notification в базу notification_db"""
 
-    send(rabbit_channel, "notification", personal_1.json().encode())
+    send(rabbit_channel, settings.rb_receiving_queue, personal_1.json().encode())
     time.sleep(3)
 
     in_postgres = get_personal_notification(postgres_cur, personal_1.json(), str(personal_1.user_id))
@@ -46,7 +49,7 @@ def test_individual_notification(rabbit_channel: BlockingChannel, postgres_cur: 
 def test_mass_notification(rabbit_channel: BlockingChannel, postgres_cur: Cursor) -> None:
     """Проверка доставки mass уведомления из очереди notification в базу notification_db"""
 
-    send(rabbit_channel, "notification", mass_1.json().encode())
+    send(rabbit_channel, settings.rb_receiving_queue, mass_1.json().encode())
     time.sleep(3)
 
     in_postgres = get_mass_notification(postgres_cur, mass_1.json())

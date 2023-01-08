@@ -24,7 +24,7 @@ class Settings(BaseSettings):
     rb_port: int = Field(5672)
     rb_user: str = Field("user")
     rb_password: str = Field("pass")
-    rb_receiving_queue: str = Field("notification")
+    rb_receiving_queue: str = Field("notifications")
     rb_transfer_queue: str = Field("generator")
 
 
