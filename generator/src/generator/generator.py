@@ -1,9 +1,9 @@
 from core.settings import get_settings
 from db.base import BaseDatabase, BaseDocumentData, BaseQueue
 from models.notifications import (
-    NotificationForWorker,
     NotificationFromNotifications,
     NotificationType,
+    TaskForWorker,
 )
 
 settings = get_settings()
@@ -40,17 +40,19 @@ class Generator:
     @staticmethod
     def create_welcome(
         notification: NotificationFromNotifications,
-    ) -> NotificationForWorker:
-        """Подготовка уведомления для welcome сообщения.
+    ) -> TaskForWorker:
+        """Подготовка задачи для welcome сообщения.
 
         Args:
             notification(NotificationFromNotifications): Уведомление
 
         Returns:
-            NotificationForWorker: данные для отправки в очередь к воркеру.
+            TaskForWorker: задача для отправки в очередь к воркеру.
         """
-        return NotificationForWorker(
-            email=notification.meta.email,
+        return TaskForWorker(
+            targets=["email"],
+            email=notification.fields.get("email"),
             template=notification.type,
             fields=notification.fields,
+            user_id=notification.fields.get("user_id"),
         )
