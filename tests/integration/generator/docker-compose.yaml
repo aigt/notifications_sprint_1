@@ -1,0 +1,56 @@
+version: '3.9'
+
+services:
+
+  app:
+    build: ../../../generator
+    env_file:
+      - test.env
+    depends_on:
+      - rabbitmq
+      - mongodb
+
+  rabbitmq:
+    image: rabbitmq:3.11-alpine
+    ports:
+      - "5672:5672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=user
+      - RABBITMQ_DEFAULT_PASS=pass
+
+  mongodb:
+    image: mongo
+    command: mongod --dbpath /data/db --port 27017
+    ports:
+      - "27017:27017"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+
+  users_db:
+    image: postgres:15.0-alpine
+    env_file:
+      - test.env
+    environment:
+      - POSTGRES_HOST=users_db
+      - POSTGRES_PORT=5432
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -d $$POSTGRES_DB -h $$POSTGRES_HOST -p $$POSTGRES_PORT -U $$POSTGRES_USER"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  tests:
+    build: .
+    depends_on:
+      - app
+      - rabbitmq
+    env_file:
+      - test.env
+    entrypoint: >
+      sh -c "sleep 7&&python3 init_databases.py&&python3 -m pytest -v"
