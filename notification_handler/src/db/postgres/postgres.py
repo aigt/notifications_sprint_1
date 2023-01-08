@@ -25,13 +25,38 @@ class Postgres(BaseDatabase):
     def __init__(self, connect: Connection):
         self._con = connect
 
-    def add_notification(self, table: str, notification: Notification) -> None:
-        """Добавление данных в таблицу info.
+    def add_personal_notification(self, notification: Notification) -> None:
+        """Добавление данных в таблицу personal.
 
         Args:
-            table(str): Имя таблицы
             notification(Notification): Данные для добавления в таблицу
         """
+        with self._con.cursor() as cur:
+            sql = """
+            INSERT INTO notify_schedule.personal (user_id, notification)
+            VALUES (%s, %s)
+            """
+            cur.execute(
+                sql,
+                (notification.user_id, notification.json()),
+            )
+
+        self._con.commit()
+
+    def add_mass_notification(self, notification: Notification) -> None:
+        """Добавление данных в таблицу mass.
+
+        Args:
+            notification(Notification): Данные для добавления в таблицу
+        """
+        with self._con.cursor() as cur:
+            sql = """
+            INSERT INTO notify_schedule.mass (notification)
+            VALUES (%s)
+            """
+            cur.execute(sql, (notification.json(),))
+
+        self._con.commit()
 
 
 @lru_cache()

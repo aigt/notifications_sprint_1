@@ -23,13 +23,8 @@ def callback(
         body(bytes): Тело данных из очереди
     """
     notification = orjson.loads(body)
-    meta = notification.get("meta")
-    notification = Notification(
-        meta=Meta(**meta),
-        type=notification.get("type"),
-        custom_template=notification.get("custom_template"),
-        fields=notification.get("fields"),
-    )
+    notification["meta"] = Meta(**notification.get("meta"))
+    notification = Notification(**notification)
 
     sorter = NotificationHandler(db=get_postgres(), queue=get_rabbit())
     sorter.sort(notification)

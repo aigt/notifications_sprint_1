@@ -28,10 +28,7 @@ class NotificationHandler:
             self.queue.send(settings.rb_transfer_queue, notification)
 
         elif notification.meta.scale == NotificationScale.bulk:
-            self.db.add_notification(notification=notification, table=settings.t_bulk)
+            self.db.add_mass_notification(notification)
 
         elif notification.meta.scale == NotificationScale.individual:
-            self.db.add_notification(
-                notification=notification,
-                table=settings.t_individual,
-            )
+            self.db.add_personal_notification(notification)
