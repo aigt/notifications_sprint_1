@@ -11,7 +11,7 @@ mongo_client: Optional[MongoClient] = None
 
 
 def get_mongo_con() -> MongoClient:
-    """Получить объект базы данных.
+    """Получить клиент базы данных.
 
     Returns:
         mongo_con(MongoClient): Клиент базы данных.
@@ -22,9 +22,21 @@ def get_mongo_con() -> MongoClient:
 class MongoDB(BaseDocumentData):
     """Класс для работы с MongoDB."""
 
+    def __init__(self, client: MongoClient):
+        self.client = client
+
     def get_user_bookmark(self, user: str) -> None:
         """Запрос закладок пользователя по его имени.
 
         Args:
             user(str): Почта
         """
+
+
+def get_mongo() -> MongoDB:
+    """Получить объект базы данных.
+
+    Returns:
+        MongoDB: Объект базы данных.
+    """
+    return MongoDB(get_mongo_con())

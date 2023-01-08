@@ -40,6 +40,8 @@ class Meta(OrjsonModel):
 class Notification(OrjsonModel):
     """Родительский класс уведомлений."""
 
+    fields: Optional[dict]
+
 
 class NotificationFromNotifications(Notification):
     """Модель уведомления получаемая из очереди от обработчика уведомлений."""
@@ -47,8 +49,10 @@ class NotificationFromNotifications(Notification):
     meta: Meta
     type: NotificationType
     custom_template: Optional[Any]
-    fields: Optional[dict]
 
 
 class NotificationForWorker(Notification):
     """Модель уведомления для добавления в очередь к воркеру."""
+
+    email: EmailStr
+    template: Optional[Any]

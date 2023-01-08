@@ -37,6 +37,3 @@ def start_up() -> None:
     )
 
     mongo.mongo_client = MongoClient(settings.mongo_dsn, uuidRepresentation="standard")
-
-
-start_up()
