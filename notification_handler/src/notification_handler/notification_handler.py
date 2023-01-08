@@ -1,8 +1,6 @@
 from core.settings import get_settings
 from db.base import BaseDatabase, BaseQueue
-from db.postgres.postgres import get_postgres
-from db.rabbit.rabbitmq import get_rabbit
-from models.notification import Notification, NotificationType
+from models.notification import Notification, NotificationScale, NotificationUrgency
 
 settings = get_settings()
 
@@ -12,8 +10,8 @@ class NotificationHandler:
 
     def __init__(
         self,
-        db: BaseDatabase = get_postgres(),
-        queue: BaseQueue = get_rabbit(),
+        db: BaseDatabase,
+        queue: BaseQueue,
     ):
         self.db = db
         self.queue = queue
@@ -21,16 +19,19 @@ class NotificationHandler:
     def sort(self, notification: Notification) -> None:
         """Определение направления для уведомления.
 
-        Args:
-            notification(Notification): Уведомление
-        """
-        if notification.type == NotificationType.welcome:
-            self.welcome_handler(notification)
-
-    def welcome_handler(self, notification: Notification) -> None:
-        """Передача Welcome уведомления в очередь генератора.
+        Если уведомление срочное, отправка идет сразу в очередь к генератору.
 
         Args:
             notification(Notification): Уведомление
         """
-        self.queue.send(settings.rb_transfer_queue, notification)
+        if notification.meta.urgency == NotificationUrgency.immediate:
+            self.queue.send(settings.rb_transfer_queue, notification)
+
+        elif notification.meta.scale == NotificationScale.bulk:
+            self.db.add_notification(notification=notification, table=settings.t_bulk)
+
+        elif notification.meta.scale == NotificationScale.individual:
+            self.db.add_notification(
+                notification=notification,
+                table=settings.t_individual,
+            )

@@ -4,11 +4,14 @@ import psycopg
 from pika import BlockingConnection, ConnectionParameters
 from pika.exceptions import AMQPConnectionError
 
+from core.logger import configure_logging
 from core.settings import get_settings
 from db.postgres import postgres
 from db.rabbit import rabbitmq
 
 settings = get_settings()
+
+configure_logging()
 
 
 @backoff.on_exception(backoff.expo, (psycopg.OperationalError, AMQPConnectionError))
@@ -28,6 +31,3 @@ def start_up() -> None:
             credentials=pika.PlainCredentials(settings.rb_user, settings.rb_password),
         ),
     )
-
-
-start_up()

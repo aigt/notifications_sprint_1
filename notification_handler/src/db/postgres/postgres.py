@@ -25,10 +25,11 @@ class Postgres(BaseDatabase):
     def __init__(self, connect: Connection):
         self._con = connect
 
-    def add_notification_in_info_table(self, notification: Notification) -> None:
+    def add_notification(self, table: str, notification: Notification) -> None:
         """Добавление данных в таблицу info.
 
         Args:
+            table(str): Имя таблицы
             notification(Notification): Данные для добавления в таблицу
         """
 
