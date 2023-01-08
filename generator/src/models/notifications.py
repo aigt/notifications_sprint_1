@@ -1,5 +1,6 @@
 import enum
-from typing import Any, Optional
+from typing import Any, List, Optional
+from uuid import UUID
 
 from pydantic import EmailStr
 
@@ -33,7 +34,6 @@ class Meta(OrjsonModel):
 
     urgency: NotificationUrgency
     scale: NotificationScale
-    email: Optional[EmailStr]
     periodic: bool
 
 
@@ -51,8 +51,10 @@ class NotificationFromNotifications(Notification):
     custom_template: Optional[Any]
 
 
-class NotificationForWorker(Notification):
-    """Модель уведомления для добавления в очередь к воркеру."""
+class TaskForWorker(Notification):
+    """Модель задачи для добавления в очередь к воркеру."""
 
-    email: EmailStr
+    targets: List[str]
     template: Optional[Any]
+    user_id: Optional[UUID]
+    email: EmailStr

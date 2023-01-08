@@ -4,7 +4,7 @@ from pika import BlockingConnection
 
 from core.settings import get_settings
 from db.base import BaseQueue
-from models.notifications import NotificationForWorker
+from models.notifications import TaskForWorker
 
 rabbitmq_con: Optional[BlockingConnection] = None
 
@@ -36,15 +36,15 @@ class Rabbit(BaseQueue):
         self._channel.basic_consume(settings.rb_receiving_queue, callback)
         self._channel.start_consuming()
 
-    def send(self, queue: str, notification: NotificationForWorker) -> None:
+    def send(self, queue: str, notification: TaskForWorker) -> None:
         """Отправление данных в очередь.
 
         Args:
             queue(str): Имя очереди
-            notification(NotificationForWorker): данные для отправки
+            notification(TaskForWorker): данные для отправки
         """
         self._channel.basic_publish(
-            exchange="",
+            exchange=settings.rb_exchange,
             routing_key=settings.rb_transfer_queue,
             body=notification.json(),
         )
