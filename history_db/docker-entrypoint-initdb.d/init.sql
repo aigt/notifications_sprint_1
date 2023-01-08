@@ -1,9 +1,7 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 
-
 CREATE SCHEMA IF NOT EXISTS notify_history;
-
 
 
 CREATE TABLE IF NOT EXISTS notify_history.notification (
@@ -12,3 +10,7 @@ CREATE TABLE IF NOT EXISTS notify_history.notification (
     , notification TEXT NOT NULL
     , created_at   TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+
+
+CREATE INDEX IF NOT EXISTS user_id_idx
+ON notify_history.notification (user_id);
