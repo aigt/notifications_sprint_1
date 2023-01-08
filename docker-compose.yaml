@@ -57,6 +57,7 @@ services:
     image: postgres:15.0-alpine
     volumes:
       - templates_vol:/var/lib/postgresql/data/
+      - ./templates_db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
     env_file:
       - env_files/templates_db.env
     environment:
@@ -126,6 +127,7 @@ services:
     image: postgres:15.0-alpine
     volumes:
       - history_vol:/var/lib/postgresql/data/
+      - ./history_db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
     env_file:
       - env_files/history_db.env
     environment:
@@ -151,7 +153,7 @@ volumes:
   templates_vol:
   users_vol:
   notifications_vol:
-  history_net:
+  history_vol:
 
 
 networks:
@@ -160,4 +162,4 @@ networks:
   templates_net:
   users_net:
   notifications_net:
-  history_vol:
+  history_net:
