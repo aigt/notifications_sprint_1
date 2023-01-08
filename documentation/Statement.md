@@ -209,6 +209,42 @@ UGC сервис отправляет задачу в API сервиса уве�
 
 ## Схемы данных в БД
 
+### Notifications DB
+
+Схема в БД для данных: `notify_schedule`
+
+Сами оповещения сохраняются в JSONB формате - подробнее о работе с форматом можно посмотреть по ссылкам:
+- https://www.psycopg.org/psycopg3/docs/basic/adapt.html#json-adaptation
+- https://habr.com/ru/post/254425/
+- https://www.postgresql.org/docs/15/functions-json.html
+
+
+Данные по несрочным персональным оповещениям:
+```mermaid
+erDiagram
+
+  personal {
+    id uuid
+    user_id uuid
+    notification jsonb
+    created_at timestamp
+  }
+
+```
+
+
+Данные по несрочным массовым оповещениям:
+```mermaid
+erDiagram
+
+  mass {
+    id uuid
+    notification text
+    created_at timestamp
+  }
+
+```
+
 ### Notifications history DB
 
 Схема в БД для данных: `notify_history`
