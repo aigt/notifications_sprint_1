@@ -27,6 +27,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    volumes:
+      - ./postgres_ddl:/docker-entrypoint-initdb.d
 
   rabbitmq:
     image: rabbitmq:3.11-alpine

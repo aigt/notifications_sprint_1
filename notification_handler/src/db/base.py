@@ -8,12 +8,22 @@ class BaseDatabase(ABC):
     """Абстрактный класс для реляционной базы данных."""
 
     @abstractmethod
-    def add_notification_in_info_table(self, notification: Notification) -> None:
-        """Добавление данных в таблицу info.
+    def add_personal_notification(self, notification: Notification) -> None:
+        """Добавление данных в таблицу personal.
 
         Args:
             notification(Notification): Данные для добавления в таблицу
         """
+        raise NotImplementedError()
+
+    @abstractmethod
+    def add_mass_notification(self, notification: Notification) -> None:
+        """Добавление данных в таблицу mass.
+
+        Args:
+            notification(Notification): Данные для добавления в таблицу
+        """
+        raise NotImplementedError()
 
 
 class BaseQueue(ABC):

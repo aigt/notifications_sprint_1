@@ -1,5 +1,6 @@
 import enum
 from typing import Any, Optional
+from uuid import UUID
 
 from pydantic import EmailStr
 
@@ -33,7 +34,6 @@ class Meta(OrjsonModel):
 
     urgency: NotificationUrgency
     scale: NotificationScale
-    email: Optional[EmailStr]
     periodic: bool
 
 
@@ -44,3 +44,5 @@ class Notification(OrjsonModel):
     type: NotificationType
     custom_template: Optional[Any]
     fields: Optional[dict]
+    user_id: Optional[UUID]
+    email: Optional[EmailStr]

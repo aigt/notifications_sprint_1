@@ -12,7 +12,6 @@ rabbitmq_con: Optional[BlockingConnection] = None
 settings = get_settings()
 
 
-@lru_cache
 def get_rabbit_con() -> BlockingConnection:
     """Фабрика для получения соединения с rabbitmq.
 

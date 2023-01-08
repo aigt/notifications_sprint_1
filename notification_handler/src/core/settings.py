@@ -8,6 +8,10 @@ from pydantic import BaseSettings, Field
 class Settings(BaseSettings):
     """Настройки приложения."""
 
+    # Таблицы Postgres
+    t_bulk: str = "bulk"
+    t_individual: str = "individual"
+
     # Настройки Postgres
     postgres_db: str = Field("notifications")
     postgres_user: str = Field("app")
@@ -20,8 +24,9 @@ class Settings(BaseSettings):
     rb_port: int = Field(5672)
     rb_user: str = Field("user")
     rb_password: str = Field("pass")
-    rb_receiving_queue: str = Field("Notification")
-    rb_transfer_queue: str = Field("Generator")
+    rb_receiving_queue: str = Field("notifications")
+    rb_exchange: str = Field("notifications")
+    rb_transfer_queue: str = Field("generator")
 
 
 @lru_cache()

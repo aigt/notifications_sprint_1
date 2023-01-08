@@ -3,10 +3,12 @@ from time import sleep
 from typing import Generator
 
 import pika
+import psycopg
 import requests  # type: ignore
 from pika import BlockingConnection, ConnectionParameters
 from pika.adapters.blocking_connection import BlockingChannel
 from pika.exceptions import AMQPError
+from psycopg.rows import dict_row
 from pytest import fixture
 from settings import get_settings
 
@@ -57,9 +59,16 @@ def rabbit_channel(rabbit_con: BlockingConnection) -> Generator[BlockingChannel,
 
 
 @fixture(scope="function")
-def http_con() -> Generator:
-    """http клиент"""
-
-    con = requests.Session()
-    yield con
+def postgres_cur() -> Generator:
+    """postgres курсор."""
+    con = psycopg.connect(
+        host=settings.postgres_host,
+        port=settings.postgres_port,
+        dbname=settings.postgres_db,
+        user=settings.postgres_user,
+        password=settings.postgres_password,
+        row_factory=dict_row,
+    )
+    cur = con.cursor()
+    yield cur
     con.close()

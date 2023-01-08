@@ -1,26 +1,27 @@
 import enum
 from typing import Any, Optional
+from uuid import UUID
 
 from pydantic import EmailStr
 
 from models.orjson import OrjsonModel
 
 
-class NotificationUrgency(str, enum.Enum):
+class NotificationUrgency(enum.Enum):
     """Типы срочности уведомления."""
 
     immediate = "immediate"
     usual = "usual"
 
 
-class NotificationScale(str, enum.Enum):
+class NotificationScale(enum.Enum):
     """Типы массовости уведомления."""
 
     bulk = "bulk"
     individual = "individual"
 
 
-class NotificationType(str, enum.Enum):
+class NotificationType(enum.Enum):
     """Типы уведомлений."""
 
     show_subs = "show_subs"
@@ -33,11 +34,7 @@ class Meta(OrjsonModel):
 
     urgency: NotificationUrgency
     scale: NotificationScale
-    email: Optional[EmailStr]
     periodic: bool
-
-    class Config:
-        use_enum_values = True
 
 
 class Notification(OrjsonModel):
@@ -47,6 +44,5 @@ class Notification(OrjsonModel):
     type: NotificationType
     custom_template: Optional[Any]
     fields: Optional[dict]
-
-    class Config:
-        use_enum_values = True
+    user_id: Optional[UUID]
+    email: Optional[EmailStr]

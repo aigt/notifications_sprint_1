@@ -1,3 +1,5 @@
+import uuid
+
 from models.notification import (
     Meta,
     Notification,
@@ -6,16 +8,31 @@ from models.notification import (
     NotificationUrgency,
 )
 
-meta_1 = Meta(
-    urgency=NotificationUrgency.immediate, scale=NotificationScale.individual, email="test_1@gmail.com", periodic=False
-)
-meta_2 = Meta(
-    urgency=NotificationUrgency.immediate, scale=NotificationScale.individual, email="test_2@gmail.com", periodic=False
-)
-meta_3 = Meta(
-    urgency=NotificationUrgency.immediate, scale=NotificationScale.individual, email="test_3@gmail.com", periodic=False
+meta_welcome = Meta(urgency=NotificationUrgency.immediate, scale=NotificationScale.individual, periodic=False)
+
+meta_personal = Meta(urgency=NotificationUrgency.usual, scale=NotificationScale.individual, periodic=False)
+
+meta_mass = Meta(urgency=NotificationUrgency.usual, scale=NotificationScale.bulk, periodic=True)
+
+welcome_1 = Notification(
+    meta=meta_welcome,
+    type=NotificationType.welcome,
+    user_id=uuid.uuid4(),
+    email="test@gmail.com",
+    fields={"user_name": "name"},
 )
 
-welcome_1 = Notification(meta=meta_1, type=NotificationType.welcome)
-welcome_2 = Notification(meta=meta_2, type=NotificationType.welcome)
-welcome_3 = Notification(meta=meta_3, type=NotificationType.welcome)
+personal_1 = Notification(
+    meta=meta_personal,
+    type=NotificationType.info,
+    user_id=uuid.uuid4(),
+    email="test@gmail.com",
+    fields={"user_name": "name"},
+)
+
+mass_1 = Notification(
+    meta=meta_mass,
+    type=NotificationType.info,
+    user_id=uuid.uuid4(),
+    fields={"movie_id": "id"},
+)
