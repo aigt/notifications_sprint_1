@@ -25,6 +25,7 @@ class Settings(BaseSettings):
     rb_user: str = Field("user")
     rb_password: str = Field("pass")
     rb_receiving_queue: str = Field("notifications")
+    rb_exchange: str = Field("notifications")
     rb_transfer_queue: str = Field("generator")
 
 
