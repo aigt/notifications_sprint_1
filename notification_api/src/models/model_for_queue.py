@@ -1,8 +1,5 @@
 import enum
-from typing import Any, Optional
-from uuid import UUID
-
-from pydantic import EmailStr
+from typing import Any, Dict, Optional
 
 from models.orjson import OrjsonModel
 
@@ -43,6 +40,4 @@ class Notification(OrjsonModel):
     meta: Meta
     type: NotificationType
     custom_template: Optional[Any]
-    fields: Optional[dict]
-    user_id: Optional[UUID]
-    email: Optional[EmailStr]
+    fields: Dict[str, str]
