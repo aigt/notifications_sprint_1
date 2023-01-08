@@ -13,6 +13,9 @@ class Settings(BaseSettings):
     rb_port: int = Field(5672)
     rb_user: str = Field("user")
     rb_password: str = Field("pass")
+    rb_receiving_queue: str = Field("generator")
+    rb_exchange: str = Field("notifications")
+    rb_transfer_queue: str = Field("worker")
 
     # Настройки MongoDB
     mongo_dsn = Field("mongodb://localhost:27017")
