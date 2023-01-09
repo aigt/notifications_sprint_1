@@ -1,5 +1,7 @@
-from typing import Optional
+from typing import List, Optional
+from uuid import UUID
 
+from bson import Binary
 from pymongo import MongoClient
 
 from core.settings import get_settings
@@ -25,19 +27,20 @@ class MongoDB(BaseDocumentData):
     def __init__(self, client: MongoClient):
         self.client = client
 
-    def get_user_bookmark(self, user: str) -> None:
-        """Запрос закладок пользователя по его имени.
-
-        Args:
-            user(str): Почта
-        """
-
-    def get_users_by_movie_id(self, movie_id: str) -> None:
+    def get_users_by_movie_id(self, movie_id: str) -> List[str]:
         """Запрос для получения списка пользователей подписанных на фильм.
 
         Args:
             movie_id(str): идентификатор фильма.
+
+        Returns:
+            users(List[str]): Список пользователей подписанных на фильм.
         """
+        collection = self.client.ugc_movies.bookmark
+        return [
+            user.get("user_id")
+            for user in collection.find({"bookmarks": Binary.from_uuid(UUID(movie_id))})
+        ]
 
 
 def get_mongo() -> MongoDB:

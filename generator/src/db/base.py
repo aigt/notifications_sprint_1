@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Callable
+from typing import Callable, List
 
 from models.notifications import Notification
 
@@ -8,11 +8,14 @@ class BaseDatabase(ABC):
     """Абстрактный класс для реляционной базы данных."""
 
     @abstractmethod
-    def get_user_name(self, email: str) -> None:
+    def get_users_emails(self, user_id_list: List[str]) -> List:
         """Запрос имени пользователя по его почте.
 
         Args:
-            email(str): Почта
+            user_id_list(list): Спискок пользователей, чъя почта необходима
+
+        Returns:
+            (list): Список пар {user_id: email}
         """
 
 
@@ -41,9 +44,12 @@ class BaseDocumentData(ABC):
     """Абстрактный класс для работы с документоориентированными базами."""
 
     @abstractmethod
-    def get_user_bookmark(self, user: str) -> str:
-        """Запрос закладок пользователя по его имени.
+    def get_users_by_movie_id(self, movie_id: str) -> List[str]:
+        """Запрос для получения списка пользователей подписанных на фильм.
 
         Args:
-            user(str): Почта
+            movie_id(str): идентификатор фильма.
+
+        Returns:
+            users(List[str]): Список пользователей подписанных на фильм.
         """

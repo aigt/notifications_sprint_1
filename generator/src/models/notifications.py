@@ -4,7 +4,16 @@ from uuid import UUID
 
 from pydantic import EmailStr
 
+from models.base import Notification
 from models.orjson import OrjsonModel
+
+
+class NotificationTargets(enum.Enum):
+    """Направления для уведомления."""
+
+    email = "email"
+    sms = "sms"
+    push = "push"
 
 
 class NotificationUrgency(enum.Enum):
@@ -37,12 +46,6 @@ class Meta(OrjsonModel):
     periodic: bool
 
 
-class Notification(OrjsonModel):
-    """Родительский класс уведомлений."""
-
-    fields: Optional[dict]
-
-
 class NotificationFromNotifications(Notification):
     """Модель уведомления получаемая из очереди от обработчика уведомлений."""
 
@@ -54,7 +57,7 @@ class NotificationFromNotifications(Notification):
 class TaskForWorker(Notification):
     """Модель задачи для добавления в очередь к воркеру."""
 
-    targets: List[str]
+    targets: List[NotificationTargets]
     template: Optional[Any]
     user_id: Optional[UUID]
     email: EmailStr
