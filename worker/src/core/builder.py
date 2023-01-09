@@ -1,12 +1,13 @@
+import logging
 from typing import Dict
 
 from pika.credentials import PlainCredentials
 
 from brokers.rabbit import RabbitMQ
 from core.config import Settings
+from services.consumer import Consumer
 from services.email_publisher import EmailPublisher
 from services.email_render import EmailRender
-from services.subscriber import Subscriber
 from worker_app import WorkerApp
 from workers.email import EmailWorker
 from workers.history import HistoryWorker
@@ -20,6 +21,25 @@ def build() -> WorkerApp:
         WorkerApp: Класс-приложение.
     """
     settings = Settings()
+
+    logging.info("Set upping:")
+    logging.info(
+        "RabbitMQ host:port: %s:%s",  # noqa: WPS323
+        settings.rb_host,
+        settings.rb_port,
+    )
+    logging.info(
+        "worker_queue_name: %s",  # noqa: WPS323
+        settings.rb_worker_queue_name,
+    )
+    logging.info(
+        "email_exchange_name: %s",  # noqa: WPS323
+        settings.rb_email_exchange_name,
+    )
+    logging.info(
+        "email_queue_name: %s",  # noqa: WPS323
+        settings.rb_email_queue_name,
+    )
 
     credentials = PlainCredentials(
         username=settings.rb_user,
@@ -44,6 +64,10 @@ def build() -> WorkerApp:
     email_worker_channel.queue_declare(
         queue=settings.rb_email_queue_name,
         durable=True,
+    )
+    email_worker_channel.queue_bind(
+        queue=settings.rb_email_queue_name,
+        exchange=settings.rb_email_exchange_name,
     )
 
     subscriber_channel = rabbit_connection.channel()
@@ -71,7 +95,7 @@ def build() -> WorkerApp:
     # отдельно от указываемых в сообщениях
     history_worker = HistoryWorker()
 
-    subscriber = Subscriber(
+    subscriber = Consumer(
         workers=workers,
         history_worker=history_worker,
         subscriber_channel=subscriber_channel,

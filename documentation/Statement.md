@@ -174,11 +174,11 @@ sequenceDiagram
     "email"
   ],
   "email": "email@host.com",
-  "user_id": "UUID",
+  "user_id": "3a815b88-c88e-4381-bcc6-fea73f052946",
   "template": "welcome",
-  "fields": [
+  "fields": {
     "name": "Василий"
-  ]
+  }
 }
 ```
 
@@ -346,7 +346,7 @@ generator
   // Набор стандартных полей для шаблона
   // Если это массовая рассылка, то дополнительные данные будут получены генератором
   // в соответствии с типом шаблона
-  "fields": [
+  "fields": {
     "login": "hello",
     "name": "Василий",
     "surname": "Сидоров",
@@ -360,7 +360,7 @@ generator
     "email": "email@host.com",
 
     ...
-  ]
+  }
 }
 ```
 
@@ -394,12 +394,12 @@ worker
   "template": "template_name",
 
   // Набор стандартных полей для шаблона
-  "fields": [
+  "fields": {
     "login": "hello",
     "name": "Василий",
     "surname": "Сидоров",
     ...
-  ]
+  }
 }
 ```
 
