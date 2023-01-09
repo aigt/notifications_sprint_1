@@ -1,1 +1,84 @@
 version: '3.9'
+
+services:
+
+  rabbitmq:
+    image: rabbitmq:3.11-management-alpine
+    expose:
+      - "5672"
+      - "15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=user
+      - RABBITMQ_DEFAULT_PASS=pass
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_vol:/var/lib/rabbitmq/
+    networks:
+      - rabbitmq_net
+
+  templates_db:
+    image: postgres:15.0-alpine
+    volumes:
+      - templates_vol:/var/lib/postgresql/data/
+      - ./dev/templates_db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
+    environment:
+      - POSTGRES_HOST=templates_db
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=templates
+      - POSTGRES_USER=app
+      - POSTGRES_PASSWORD=postgres
+    expose:
+      - "5432"
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -d $$POSTGRES_DB -h $$POSTGRES_HOST -p $$POSTGRES_PORT -U $$POSTGRES_USER"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - templates_net
+
+  history_db:
+    image: postgres:15.0-alpine
+    volumes:
+      - history_vol:/var/lib/postgresql/data/
+      - ./dev/history_db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
+    environment:
+      - POSTGRES_HOST=history_db
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=history
+      - POSTGRES_USER=app
+      - POSTGRES_PASSWORD=postgres
+    expose:
+      - "5432"
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -d $$POSTGRES_DB -h $$POSTGRES_HOST -p $$POSTGRES_PORT -U $$POSTGRES_USER"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - history_net
+
+volumes:
+  rabbitmq_vol:
+  templates_vol:
+  history_vol:
+
+
+networks:
+  rabbitmq_net:
+  templates_net:
+  history_net:
