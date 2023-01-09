@@ -65,6 +65,10 @@ def build() -> WorkerApp:
         queue=settings.rb_email_queue_name,
         durable=True,
     )
+    email_worker_channel.queue_bind(
+        queue=settings.rb_email_queue_name,
+        exchange=settings.rb_email_exchange_name,
+    )
 
     subscriber_channel = rabbit_connection.channel()
     subscriber_channel.queue_declare(
