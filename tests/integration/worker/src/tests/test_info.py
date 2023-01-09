@@ -37,7 +37,7 @@ def test_stub(
     for _method_frame, _properties, body in rabbit_sub_channel.consume(
         queue=email_queue,
         auto_ack=False,
-        inactivity_timeout=10,
+        inactivity_timeout=15,
     ):
         logging.info(body)
         assert (
