@@ -12,7 +12,7 @@ services:
       - mongo_net
       - users_net
 
-  handler:
+  notification_handler:
     build: ./notification_handler
     env_file:
       - ./env_files/notification_handler.env.example
