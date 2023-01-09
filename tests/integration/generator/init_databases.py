@@ -17,8 +17,8 @@ def add_queue() -> None:
     )
     channel = connection.channel()
     channel.exchange_declare(exchange=settings.rb_exchange)
-    channel.queue_declare(settings.rb_receiving_queue)
-    channel.queue_declare(settings.rb_transfer_queue)
+    channel.queue_declare(settings.rb_receiving_queue, durable=True)
+    channel.queue_declare(settings.rb_transfer_queue, durable=True)
     channel.queue_bind(exchange=settings.rb_exchange, queue=settings.rb_transfer_queue)
     channel.queue_bind(exchange=settings.rb_exchange, queue=settings.rb_receiving_queue)
     connection.close()
@@ -31,7 +31,7 @@ def add_mongo_collections() -> None:
 
     db = client.ugc_movies
 
-    db.bookmarks.create_index("user_id")
+    db.bookmark.create_index("user_id")
     db.movie_rating.create_index("movie_id")
     db.movie_review.create_index("movie_id")
 

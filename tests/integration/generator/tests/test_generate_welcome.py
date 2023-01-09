@@ -16,7 +16,7 @@ def test_welcome(rabbit_channel: BlockingChannel) -> None:
 
     send(rabbit_channel, settings.rb_receiving_queue, welcome_1.json().encode())
     time.sleep(3)
-    method_frame, _, body = rabbit_channel.basic_get(settings.rb_transfer_queue)
+    method_frame, _, body = rabbit_channel.basic_get(settings.rb_transfer_queue, auto_ack=True)
 
     payload = orjson.loads(body)
 
@@ -31,5 +31,3 @@ def test_welcome(rabbit_channel: BlockingChannel) -> None:
     assert welcome_1.type.value == notification_in_worker_queue.template
     assert str(welcome_1.fields.get("user_name")) == notification_in_worker_queue.fields.get("user_name")
     assert str(welcome_1.fields.get("user_id")) == notification_in_worker_queue.fields.get("user_id")
-
-    rabbit_channel.basic_ack(method_frame.delivery_tag)
