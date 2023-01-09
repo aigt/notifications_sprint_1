@@ -36,13 +36,13 @@ def test_stub(
 
     for _method_frame, _properties, body in rabbit_sub_channel.consume(
         queue=email_queue,
-        auto_ack=True,
+        auto_ack=False,
         inactivity_timeout=10,
     ):
         logging.info(body)
-        logging.info(body.decode())
         assert (
             body
             == b'{"email":"email@host.com","content":"<!DOCTYPE html>\\n<html lang=\\"ru\\">\\n<head><title>\\u0414\\u043b\\u044f \\u0438\\u043d\\u0444\\u043e\\u0440\\u043c\\u0430\\u0446\\u0438\\u0438.</title></head>\\n<body>\\n  <h1>\\u041f\\u0440\\u0438\\u0432\\u0435\\u0442.</h1>\\n  <p>\\u042d\\u0442\\u043e \\u0442\\u0435\\u043a\\u0441\\u0442.</p>\\n</body>\\n</html>"}'
         )
+        rabbit_sub_channel.basic_ack(_method_frame.delivery_tag)
         break
