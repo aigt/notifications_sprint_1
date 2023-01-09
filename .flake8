@@ -41,6 +41,7 @@ per-file-ignores =
     # WPS323 Found `%` string formatting
     # WPS407 Found mutable module constant
     # WPS432 Found magic number: ...
+    # WPS213 Found too many expressions: 10 > 9
     worker/src/core/logger.py: WPS323,
     notification_api/src/core/logger.py: WPS323, WPS407
     notification_api/src/core/config.py: WPS432
@@ -55,7 +56,7 @@ per-file-ignores =
     generator/src/models/notifications.py: WPS110
     worker/src/core/config.py: WPS432
     generator/src/generator/generator.py: WPS602
-
+    worker/src/core/builder.py: WPS213
 
 exclude =
     # No need to traverse our git directory

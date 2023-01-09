@@ -1,3 +1,4 @@
+import logging
 from typing import Dict
 
 from pika.credentials import PlainCredentials
@@ -20,6 +21,25 @@ def build() -> WorkerApp:
         WorkerApp: Класс-приложение.
     """
     settings = Settings()
+
+    logging.info("Set upping:")
+    logging.info(
+        "RabbitMQ host:port: %s:%s",  # noqa: WPS323
+        settings.rb_host,
+        settings.rb_port,
+    )
+    logging.info(
+        "worker_queue_name: %s",  # noqa: WPS323
+        settings.rb_worker_queue_name,
+    )
+    logging.info(
+        "email_exchange_name: %s",  # noqa: WPS323
+        settings.rb_email_exchange_name,
+    )
+    logging.info(
+        "email_queue_name: %s",  # noqa: WPS323
+        settings.rb_email_queue_name,
+    )
 
     credentials = PlainCredentials(
         username=settings.rb_user,
