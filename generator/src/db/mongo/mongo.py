@@ -32,6 +32,13 @@ class MongoDB(BaseDocumentData):
             user(str): Почта
         """
 
+    def get_users_by_movie_id(self, movie_id: str) -> None:
+        """Запрос для получения списка пользователей подписанных на фильм.
+
+        Args:
+            movie_id(str): идентификатор фильма.
+        """
+
 
 def get_mongo() -> MongoDB:
     """Получить объект базы данных.

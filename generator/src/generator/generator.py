@@ -1,3 +1,5 @@
+from typing import List
+
 from core.settings import get_settings
 from db.base import BaseDatabase, BaseDocumentData, BaseQueue
 from models.notifications import (
@@ -36,6 +38,27 @@ class Generator:
                 settings.rb_transfer_queue,
                 self.create_welcome(notification),
             )
+
+    def create_new_series(self, notification: NotificationFromNotifications) -> None:
+        """Создание уведомлений о выходе новой серии.
+
+        Args:
+            notification(NotificationFromNotifications): запрос из очереди.
+        """
+
+    def get_users_witch_movie_subscribe(self, movie_id: str) -> None:
+        """Запрос зрителей подписанных на сериал.
+
+        Args:
+            movie_id(str): идентификатор сериала.
+        """
+
+    def get_users_email(self, user_id_list: List[str]) -> None:
+        """Запрос почты пользотелей.
+
+        Args:
+            user_id_list(list): Список пользователей
+        """
 
     @staticmethod
     def create_welcome(
