@@ -37,7 +37,8 @@ class MongoDB(BaseDocumentData):
             users(List[str]): Список пользователей подписанных на фильм.
         """
         collection = self.client.ugc_movies.bookmark
-        return [user.get("user_id") for user in collection.find({"bookmarks": Binary.from_uuid(UUID(movie_id))})]
+        find_users = collection.find({"bookmarks": Binary.from_uuid(UUID(movie_id))})
+        return [user.get("user_id") for user in find_users]
 
 
 def get_mongo() -> MongoDB:
