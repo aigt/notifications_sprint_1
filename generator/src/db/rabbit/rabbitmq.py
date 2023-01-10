@@ -1,3 +1,4 @@
+from functools import lru_cache
 from typing import Callable, Optional
 
 from pika import BlockingConnection
@@ -50,6 +51,7 @@ class Rabbit(BaseQueue):
         )
 
 
+@lru_cache()
 def get_rabbit() -> Rabbit:
     """Фабрика для получения экземпляра класса Rabbit.
 

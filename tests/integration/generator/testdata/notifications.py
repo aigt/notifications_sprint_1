@@ -24,7 +24,12 @@ meta_2 = Meta(
 welcome_1 = NotificationFromNotifications(
     meta=meta_1,
     type=NotificationType.welcome,
-    fields={"user_id": uuid.uuid4(), "user_name": "user_1", "email": "test_1@gmail.com"},
+    fields={
+        "user_id": uuid.uuid4(),
+        "confirmation_url": "http://localhost/confirmation?user_id=uuid&tmp=16234234",
+        "user_name": "user_1",
+        "email": "test_1@gmail.com",
+    },
 )
 
 new_series = NotificationFromNotifications(

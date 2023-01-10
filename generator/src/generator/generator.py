@@ -1,4 +1,6 @@
-from typing import Any, List
+from typing import Any
+
+import pyshorteners
 
 from core.settings import get_settings
 from db.base import BaseDatabase, BaseDocumentData, BaseQueue
@@ -88,8 +90,8 @@ class Generator:
         """
         return self.users_base.get_users_emails(user_id_list)
 
-    @staticmethod
     def create_welcome(
+        self,
         notification: NotificationFromNotifications,
     ) -> TaskForWorker:
         """Подготовка задачи для welcome сообщения.
@@ -100,6 +102,9 @@ class Generator:
         Returns:
             TaskForWorker: задача для отправки в очередь к воркеру.
         """
+        tini_url = self.create_tiny_url(notification.fields.get("confirmation_url"))
+        notification.fields.update({"confirmation_url": tini_url})
+
         return TaskForWorker(
             targets=[NotificationTargets.email],
             email=notification.fields.get("email"),
@@ -107,3 +112,15 @@ class Generator:
             fields=notification.fields,
             user_id=notification.fields.get("user_id"),
         )
+
+    @staticmethod
+    def create_tiny_url(url: str) -> Any:
+        """Создание короткой ссылки.
+
+        Args:
+            url(str): ссылка
+
+        Returns:
+            (str): короткая ссылка
+        """
+        return pyshorteners.Shortener().tinyurl.short(url)

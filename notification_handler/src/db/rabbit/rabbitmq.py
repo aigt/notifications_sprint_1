@@ -37,15 +37,14 @@ class Rabbit(BaseQueue):
         self._channel.basic_consume(settings.rb_receiving_queue, callback)
         self._channel.start_consuming()
 
-    def send(self, queue: str, notification: Notification) -> None:
+    def send(self, notification: Notification) -> None:
         """Отправление данных в очередь.
 
         Args:
-            queue(str): Имя очереди
             notification(Notification): данные для отправки
         """
         self._channel.basic_publish(
-            exchange="",
+            exchange=settings.rb_exchange,
             routing_key=settings.rb_transfer_queue,
             body=notification.json(),
         )

@@ -1,3 +1,4 @@
+import logging
 from typing import Dict
 
 from pika.adapters.blocking_connection import BlockingChannel
@@ -7,8 +8,8 @@ from errors.exceptions import NoRequiredWorkerError
 from workers.worker import TargetWorkerName, Worker, WorkerMessage
 
 
-class Subscriber:
-    """Подписчик."""
+class Consumer:
+    """Потребитель из очереди."""
 
     def __init__(
         self,
@@ -52,7 +53,9 @@ class Subscriber:
         Raises:
             NoRequiredWorkerError: Если целевой воркер отсутствует.
         """
-        message = WorkerMessage.parse_raw(body.decode())
+        logging.info("Worker got message:")
+        logging.info(body)
+        message = WorkerMessage.parse_raw(body)
         for target_worker in message.targets:
             if target_worker not in self._workers:
                 raise NoRequiredWorkerError(

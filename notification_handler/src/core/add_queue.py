@@ -20,9 +20,9 @@ def add_queue() -> None:
         ),
     )
     channel = connection.channel()
-    channel.exchange_declare(exchange=settings.rb_exchange)
-    channel.queue_declare(settings.rb_transfer_queue)
-    channel.queue_declare(settings.rb_receiving_queue)
+    channel.exchange_declare(exchange=settings.rb_exchange, durable=True)
+    channel.queue_declare(settings.rb_transfer_queue, durable=True)
+    channel.queue_declare(settings.rb_receiving_queue, durable=True)
     channel.queue_bind(exchange=settings.rb_exchange, queue=settings.rb_transfer_queue)
     channel.queue_bind(exchange=settings.rb_exchange, queue=settings.rb_receiving_queue)
     connection.close()

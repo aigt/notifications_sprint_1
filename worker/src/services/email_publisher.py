@@ -1,7 +1,7 @@
 import json
+import logging
 
 from pika.adapters.blocking_connection import BlockingChannel
-from pika.spec import BasicProperties
 
 
 class EmailPublisher:
@@ -24,12 +24,13 @@ class EmailPublisher:
             email (str): Email, на который отправить письмо.
             email_content (str): Содержимое письма.
         """
-        properties = BasicProperties(content_type="text/plain")
         message = {"email": email, "content": email_content}
         body = json.dumps(obj=message, separators=(",", ":"))
+
+        logging.info("Worker publish email message:")
+        logging.info(body)
         self._channel.basic_publish(
             exchange=self._exchange,
             routing_key=self._queue,
             body=body,
-            properties=properties,
         )
