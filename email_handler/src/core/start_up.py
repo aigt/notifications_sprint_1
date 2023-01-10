@@ -1,6 +1,5 @@
 import backoff
 import pika
-import psycopg
 from pika import BlockingConnection, ConnectionParameters
 from pika.exceptions import AMQPConnectionError
 
@@ -10,7 +9,7 @@ from db.rabbit import rabbitmq
 settings = get_settings()
 
 
-@backoff.on_exception(backoff.expo, (psycopg.OperationalError, AMQPConnectionError))
+@backoff.on_exception(backoff.expo, AMQPConnectionError)
 def start_up() -> None:
     """Создание подключений на старте приложения."""
 

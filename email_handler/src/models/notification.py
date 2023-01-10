@@ -1,7 +1,6 @@
 from typing import Any, Optional
 
 from pydantic import EmailStr
-
 from transform import OrjsonModel
 
 

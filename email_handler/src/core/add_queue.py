@@ -1,24 +1,25 @@
 import backoff
 import pika
-from pika import BlockingConnection, ConnectionParameters
 from pika.exceptions import AMQPConnectionError
 
 from core.config import get_settings
 
-settings = get_settings()
+config = get_settings()
 
 
 @backoff.on_exception(backoff.expo, AMQPConnectionError)
 def add_queue() -> None:
     """Добавление очереди для уведомлений в RabbitMQ."""
-    credentials = pika.PlainCredentials(settings.rb_user, settings.rb_password)
-    connection = BlockingConnection(
-        ConnectionParameters(
-            host=settings.rb_host,
-            port=settings.rb_port,
-            credentials=credentials
+
+    connection = pika.BlockingConnection(
+        pika.ConnectionParameters(
+            host=config.rb_host,
+            port=config.rb_port,
+            credentials=pika.PlainCredentials(config.rb_user,
+                                              config.rb_password),
         ),
     )
     channel = connection.channel()
-    channel.queue_declare(queue="email")
+
+    channel.queue_declare(queue='email', durable=True)
     connection.close()

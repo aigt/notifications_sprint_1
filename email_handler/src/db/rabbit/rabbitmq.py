@@ -34,13 +34,15 @@ class Rabbit(BaseQueue):
         Args:
             callback(Callable): Функция обработчик входящих данных
         """
-        self._channel.basic_consume(settings.rb_receiving_queue, callback)
+        self._channel.basic_consume(
+            queue='email', on_message_callback=callback,
+            auto_ack=False
+        )
         self._channel.start_consuming()
 
 
 @lru_cache()
-def \
-        get_rabbit() -> Rabbit:
+def get_rabbit() -> Rabbit:
     """Фабрика для получения экземпляра класса Rabbit.
 
     Returns:
