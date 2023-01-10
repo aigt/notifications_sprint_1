@@ -46,6 +46,13 @@ services:
       - rabbitmq_net
       - templates_net
 
+  scheduler:
+    build: ./scheduler
+    env_file:
+      - env_files/worker.env.example
+    networks:
+      - rabbitmq_net
+
   mongo1:
     hostname: mongo1
     container_name: localmongo1
