@@ -8,3 +8,7 @@ class NoRequiredWorkerError(Exception):
 
 class NoEmailForEmailWorkerError(Exception):
     """Не указан email в сообщении на отправку электронной почтой."""
+
+
+class NoNecessaryTemplateError(Exception):
+    """Нет запрашиваемого шаблона."""
