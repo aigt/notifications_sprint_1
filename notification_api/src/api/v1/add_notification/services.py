@@ -19,12 +19,12 @@ class AddNotificationService(BaseService):
         Args:
             notify_data(Notification): Данные для форматирования запроса
         """
-        channel = await self.queue.channel()
-        exchange = await channel.declare_exchange(name=settings.rb_exchange)
-        await exchange.publish(
-            aio_pika.Message(body=notify_data.json().encode()),
-            routing_key=self.queue_name,
-        )
+        async with self.queue.channel() as channel:
+            exchange = await channel.declare_exchange(name=settings.rb_exchange, durable=True)
+            await exchange.publish(
+                aio_pika.Message(body=notify_data.json().encode()),
+                routing_key=self.queue_name,
+            )
 
 
 @lru_cache()
