@@ -2,9 +2,8 @@ import orjson
 from pika.adapters.blocking_connection import BlockingChannel
 from pika.spec import Basic, BasicProperties
 
-from ...models.notification import NotificationEmail
+# from ...models.notification import NotificationEmail
 # TODO: Исправить относительный импорт
-
 from sender.email_sender import send_message
 
 

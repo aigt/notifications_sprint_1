@@ -4,7 +4,7 @@ from typing import Callable, Optional
 from pika import BlockingConnection
 
 from core.config import get_settings
-from db.base import BaseQueue  # TODO: подправить относительный импорт
+from db.base import BaseQueue
 
 rabbitmq_con: Optional[BlockingConnection] = None
 
@@ -39,7 +39,8 @@ class Rabbit(BaseQueue):
 
 
 @lru_cache()
-def get_rabbit() -> Rabbit:
+def \
+        get_rabbit() -> Rabbit:
     """Фабрика для получения экземпляра класса Rabbit.
 
     Returns:
