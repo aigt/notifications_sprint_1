@@ -3,7 +3,7 @@ import pika
 from pika import BlockingConnection, ConnectionParameters
 from pika.exceptions import AMQPConnectionError
 
-from config import get_settings
+from core.config import get_settings
 
 settings = get_settings()
 
@@ -20,5 +20,5 @@ def add_queue() -> None:
         ),
     )
     channel = connection.channel()
-    channel.queue_declare("email")
+    channel.queue_declare(queue="email")
     connection.close()
