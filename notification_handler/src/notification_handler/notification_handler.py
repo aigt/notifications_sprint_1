@@ -25,7 +25,7 @@ class NotificationHandler:
             notification(Notification): Уведомление
         """
         if notification.meta.urgency == NotificationUrgency.immediate:
-            self.queue.send(settings.rb_transfer_queue, notification)
+            self.queue.send(notification)
 
         elif notification.meta.scale == NotificationScale.bulk:
             self.db.add_mass_notification(notification)
