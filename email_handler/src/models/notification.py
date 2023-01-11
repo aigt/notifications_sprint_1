@@ -1,7 +1,8 @@
 from typing import Any, Optional
 
 from pydantic import EmailStr
-from transform import OrjsonModel
+
+from models.transform import OrjsonModel
 
 
 class NotificationEmail(OrjsonModel):
