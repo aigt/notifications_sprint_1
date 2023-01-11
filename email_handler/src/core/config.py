@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     rb_user: str = Field("user")
     rb_password: str = Field("pass")
     rb_receiving_queue: str = Field("email")
-    rb_exchange: str = Field("email")
+    rb_exchange: str = Field("notifications")
 
     sendgrid_api_key: str = Field(..., env="SENDGRID_API_KEY")
     email_from: str = "a1exitt@yandex.ru"
