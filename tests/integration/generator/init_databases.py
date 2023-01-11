@@ -31,7 +31,7 @@ def add_mongo_collections() -> None:
 
     db = client.ugc_movies
 
-    db.bookmarks.create_index("user_id")
+    db.bookmark.create_index("user_id")
     db.movie_rating.create_index("movie_id")
     db.movie_review.create_index("movie_id")
 
