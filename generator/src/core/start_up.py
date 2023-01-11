@@ -3,6 +3,7 @@ import pika
 import psycopg
 from pika import BlockingConnection, ConnectionParameters
 from pika.exceptions import AMQPConnectionError
+from psycopg.rows import dict_row
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure
 
@@ -26,6 +27,7 @@ def start_up() -> None:
         dbname=settings.postgres_db,
         user=settings.postgres_user,
         password=settings.postgres_password,
+        row_factory=dict_row,
     )
 
     rabbitmq.rabbitmq_con = BlockingConnection(

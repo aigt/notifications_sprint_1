@@ -1,6 +1,6 @@
-from typing import Optional
+from typing import Any, List, Optional
 
-from psycopg import Connection
+from psycopg import Connection, sql
 
 from db.base import BaseDatabase
 
@@ -22,12 +22,25 @@ class Postgres(BaseDatabase):
     def __init__(self, connect: Connection):
         self._con = connect
 
-    def get_user_name(self, email: str) -> None:
-        """Запрос имени пользователя по его почте.
+    def get_users_emails(self, user_id_list: List[str]) -> Any:
+        """Запрос списка почты пользователей.
 
         Args:
-            email(str): Почта
+            user_id_list(list): Список пользователей
+
+        Returns:
+            (list): Список пар {user_id: email}
         """
+        with self._con.cursor() as cur:
+            query = sql.SQL(
+                """
+            SELECT email, user_id
+            FROM users_auth.users_data
+            where user_id IN ({0})
+            """,
+            ).format(sql.SQL(",").join(user_id_list))
+            cur.execute(query)
+            return cur.fetchall()
 
 
 def get_postgres() -> Postgres:
