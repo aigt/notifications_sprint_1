@@ -10,7 +10,7 @@ class Settings(BaseSettings):
 
     # Настройки templates_db
     tdb_dsn: PostgresDsn = Field(
-        default="postgresql://app:postgres@localhost:5432/postgres",
+        default="postgresql://app:postgres@templates_db:5432/templates",
     )
     tdb_template_sql_query_file = "sql/tempate.sql"
 
