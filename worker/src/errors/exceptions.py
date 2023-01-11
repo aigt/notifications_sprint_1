@@ -12,3 +12,7 @@ class NoEmailForEmailWorkerError(Exception):
 
 class NoNecessaryTemplateError(Exception):
     """Нет запрашиваемого шаблона."""
+
+
+class PostgresDBConnectionIsNotInitializedError(Exception):
+    """Соединение PostgresDB не инициализировано."""
