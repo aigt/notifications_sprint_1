@@ -21,6 +21,13 @@ class Settings(BaseSettings):
     mongo_dsn = Field("mongodb://localhost:27017")
     mongo_db = Field("ugc_movies")
 
+    # Настройки Postgres
+    postgres_db: str = Field("users")
+    postgres_user: str = Field("app")
+    postgres_password: str = Field("postgres")
+    postgres_host: str = Field("localhost")
+    postgres_port: int = Field(5432)
+
 
 @lru_cache()
 def get_settings() -> Settings:

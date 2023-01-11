@@ -44,6 +44,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    volumes:
+      - ./user_db_init:/docker-entrypoint-initdb.d
 
   tests:
     build: .

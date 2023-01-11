@@ -57,6 +57,7 @@ per-file-ignores =
     generator/src/models/notifications.py: WPS110
     worker/src/core/config.py: WPS432
     generator/src/generator/generator.py: WPS602
+    generator/src/db/postgres/postgres.py: WPS462
     worker/src/core/builder.py: WPS213
 
 exclude =
