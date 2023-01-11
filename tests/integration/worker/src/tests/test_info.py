@@ -1,6 +1,6 @@
 import logging
+from typing import Generator
 
-import pika
 import pytest
 from pika.adapters.blocking_connection import BlockingChannel
 
@@ -8,6 +8,7 @@ from pika.adapters.blocking_connection import BlockingChannel
 def test_stub(
     rabbit_pub_channel: BlockingChannel,
     rabbit_sub_channel: BlockingChannel,
+    templates_db: Generator,
 ) -> None:
     worker_queue = "worker"
     email_queue = "email"
@@ -42,7 +43,7 @@ def test_stub(
         logging.info(body)
         assert (
             body
-            == b'{"email":"email@host.com","content":"<!DOCTYPE html>\\n<html lang=\\"ru\\">\\n<head><title>\\u0414\\u043b\\u044f \\u0438\\u043d\\u0444\\u043e\\u0440\\u043c\\u0430\\u0446\\u0438\\u0438.</title></head>\\n<body>\\n  <h1>\\u041f\\u0440\\u0438\\u0432\\u0435\\u0442.</h1>\\n  <p>\\u042d\\u0442\\u043e \\u0442\\u0435\\u043a\\u0441\\u0442.</p>\\n</body>\\n</html>"}'
+            == b'{"email":"email@host.com","content":"<!DOCTYPE html><html lang=\\"ru\\"><head><title>\\u0414\\u043b\\u044f \\u0438\\u043d\\u0444\\u043e\\u0440\\u043c\\u0430\\u0446\\u0438\\u0438.</title></head><body><h1>\\u041f\\u0440\\u0438\\u0432\\u0435\\u0442.</h1><p>\\u042d\\u0442\\u043e \\u0442\\u0435\\u043a\\u0441\\u0442.</p></body></html>"}'
         )
         rabbit_sub_channel.basic_ack(_method_frame.delivery_tag)
         break
