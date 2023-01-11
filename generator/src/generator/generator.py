@@ -1,6 +1,8 @@
-from typing import Any
+import logging
+from typing import Any, Optional
 
 import pyshorteners
+from pydantic import ValidationError
 
 from core.settings import get_settings
 from db.base import BaseDatabase, BaseDocumentData, BaseQueue
@@ -9,8 +11,10 @@ from models.notifications import (
     NotificationType,
     TaskForWorker,
 )
+from models.welcome_model import WelcomeFieldsModel
 
 settings = get_settings()
+logger = logging.getLogger(__name__)
 
 
 class Generator:
@@ -36,15 +40,16 @@ class Generator:
             notification(NotificationFromNotifications): Уведомление из очереди.
         """
         if notification.type == NotificationType.welcome:
-            self.queue.send(
-                settings.rb_transfer_queue,
-                self.create_welcome(notification),
-            )
+            if self.create_welcome(notification):
+                self.queue.send(
+                    settings.rb_transfer_queue,
+                    self.create_welcome(notification),
+                )
 
     def create_welcome(
         self,
         notification: NotificationFromNotifications,
-    ) -> TaskForWorker:
+    ) -> Optional[TaskForWorker]:
         """Подготовка задачи для welcome сообщения.
 
         Args:
@@ -53,7 +58,13 @@ class Generator:
         Returns:
             TaskForWorker: задача для отправки в очередь к воркеру.
         """
-        tini_url = self.create_tiny_url(notification.fields.get("confirmation_url"))
+        try:
+            welcome = WelcomeFieldsModel(**notification.fields)
+        except ValidationError as err:
+            logger.info(f"{err}\n incorrect field data")
+            return None
+
+        tini_url = self.create_tiny_url(welcome.confirmation_url)
         notification.fields.update({"confirmation_url": tini_url})
 
         return TaskForWorker(
@@ -74,4 +85,4 @@ class Generator:
         Returns:
             (str): короткая ссылка
         """
-        return pyshorteners.Shortener().tinyurl.short(url)
+        return pyshorteners.Shortener().clckru.short(url)
