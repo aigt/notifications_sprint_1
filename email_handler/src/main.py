@@ -11,7 +11,6 @@ configure_logging()
 
 def main() -> None:
     """Точка входа в приложение."""
-
     add_queue()
     rabbit = get_rabbit()
     rabbit.start_consume(callback)

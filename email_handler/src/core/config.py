@@ -1,4 +1,4 @@
-"""Конфигурация"""
+"""Конфигурация."""
 
 from functools import lru_cache
 
@@ -15,8 +15,8 @@ class Settings(BaseSettings):
     rb_receiving_queue: str = Field("email")
     rb_exchange: str = Field("email")
 
-    sendgrid_api_key: str = Field(..., env='SENDGRID_API_KEY')
-    email_from: str = 'a1exitt@yandex.ru'
+    sendgrid_api_key: str = Field(..., env="SENDGRID_API_KEY")
+    email_from: str = "a1exitt@yandex.ru"
 
 
 @lru_cache()
@@ -26,5 +26,4 @@ def get_settings() -> Settings:
     Returns:
         Settings: Класс с настройками приложения.
     """
-
     return Settings()

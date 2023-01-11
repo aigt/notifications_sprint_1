@@ -12,7 +12,6 @@ settings = get_settings()
 @backoff.on_exception(backoff.expo, AMQPConnectionError)
 def start_up() -> None:
     """Создание подключений на старте приложения."""
-
     rabbitmq.rabbitmq_con = BlockingConnection(
         ConnectionParameters(
             host=settings.rb_host,

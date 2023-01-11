@@ -10,7 +10,7 @@ def callback(
     properties: BasicProperties,
     body: bytes,
 ) -> None:
-    """Обработка и передача поступающих данных в функцию отправки сообщений
+    """Обработка и передача поступающих данных в функцию отправки сообщений.
 
     Args:
         ch(BlockingChannel): Rabbitmq канал
@@ -18,10 +18,6 @@ def callback(
         properties(BasicProperties): Свойства
         body(bytes): Тело данных из очереди
     """
-
     notification = orjson.loads(body)
-    send_message(
-        email=notification.get('email'),
-        content=notification.get('content')
-    )
+    send_message(email=notification.get("email"), content=notification.get("content"))
     ch.basic_ack(delivery_tag=method.delivery_tag)

@@ -18,6 +18,7 @@ flake8-quotes = "3.3.1"
 flake8-html = "^0.4.3"
 mypy = "^0.991"
 isort = "^5.11.4"
+pre-commit = "^2.21.0"
 
 
 [build-system]

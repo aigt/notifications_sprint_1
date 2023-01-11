@@ -34,10 +34,7 @@ class Rabbit(BaseQueue):
         Args:
             callback(Callable): Функция обработчик входящих данных
         """
-        self._channel.basic_consume(
-            queue='email', on_message_callback=callback,
-            auto_ack=False
-        )
+        self._channel.basic_consume(queue="email", on_message_callback=callback, auto_ack=False)
         self._channel.start_consuming()
 
 
