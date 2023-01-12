@@ -7,11 +7,14 @@ from services.templates_storage import TemplatesStorage
 from workers.worker import MessageFieldName, MessageFieldValue
 
 
-class EmailRender:
-    """Сервис рендеринга email сообщений."""
+class Render:
+    """Сервис рендеринга сообщений."""
 
     loader = BaseLoader()
-    templates_target_name = "email"
+    jinja_env = Environment(
+        loader=loader,
+        autoescape=True,
+    )
 
     def __init__(
         self,
@@ -19,39 +22,40 @@ class EmailRender:
     ) -> None:
         self._templates_storage = templates_storage
 
-    def render_email(
+    def __call__(
         self,
         template: str,
+        target: str,
         fields: Dict[MessageFieldName, MessageFieldValue],
     ) -> str:
         """Рендерить Email.
 
         Args:
             template (str): Шаблон письма.
+            target (str): Шаблон Для какого способа публикации.
             fields (Dict[MessageFieldName, MessageFieldValue]): Поля письма для заполнения шаблона.
 
         Returns:
-            str: Письмо.
+            str: Сообщение в соответствии с шаблоном.
         """
         logging.info(
             "Rendering email with template: %s, and fields: %s",  # noqa: WPS323
             template,
             fields,
         )
+
         str_template = self._templates_storage.get(
             name=template,
-            target=self.templates_target_name,
+            target=target,
         )
 
         logging.info(
             "Got template: %s",  # noqa: WPS323
             str_template,
         )
-        jinja_env = Environment(
-            loader=self.loader,
-            autoescape=True,
-        )
-        jinja_template = jinja_env.from_string(
+
+        jinja_template = self.jinja_env.from_string(
             str_template,
         )
+
         return jinja_template.render(**fields)  # type: ignore

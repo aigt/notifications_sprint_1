@@ -8,7 +8,7 @@ from core.config import Settings
 from services import query_loader
 from services.consumer import Consumer
 from services.email_publisher import EmailPublisher
-from services.email_render import EmailRender
+from services.render import Render
 from services.templates_storage import TemplatesStorage
 from worker_app import WorkerApp
 from workers.email import EmailWorker
@@ -95,12 +95,12 @@ def build() -> WorkerApp:
         exchange=settings.rb_email_exchange_name,
         queue=settings.rb_email_queue_name,
     )
-    email_render = EmailRender(
+    messages_render = Render(
         templates_storage=templates_storage,
     )
     email_worker = EmailWorker(
         email_publisher=email_publisher,
-        email_render=email_render,
+        email_render=messages_render,
     )
 
     workers: Dict[TargetWorkerName, Worker] = {
