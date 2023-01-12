@@ -1,5 +1,5 @@
 import logging
-from typing import Any, List, Optional
+from typing import Any, Optional
 
 import pyshorteners
 from pydantic import ValidationError
@@ -49,16 +49,19 @@ class Generator:
         elif notification.type == NotificationType.show_subs:
             self.create_new_series(notification)
 
+        elif notification.type == NotificationType.info:
+            self.create_info(notification)
+
     def create_new_series(self, notification: NotificationFromNotifications) -> None:
         """Создание уведомлений о выходе новой серии.
 
         Args:
             notification(NotificationFromNotifications): запрос из очереди.
         """
-        users = self.get_users_witch_movie_subscribe(
+        users = self.ugc_base.get_users_by_movie_id(
             notification.fields.get("movie_id"),
         )
-        emails = self.get_users_email(users)
+        emails = self.users_base.get_users_emails(users)
 
         for email in emails:
             task = TaskForWorker(
@@ -72,28 +75,6 @@ class Generator:
                 settings.rb_transfer_queue,
                 task,
             )
-
-    def get_users_witch_movie_subscribe(self, movie_id: str) -> Any:
-        """Запрос зрителей подписанных на сериал.
-
-        Args:
-            movie_id(str): идентификатор сериала.
-
-        Returns:
-            (list): список пользователей с сериалом в закладках
-        """
-        return self.ugc_base.get_users_by_movie_id(movie_id)
-
-    def get_users_email(self, user_id_list: List[str]) -> Any:
-        """Запрос почты пользователей.
-
-        Args:
-            user_id_list(list): Список пользователей
-
-        Returns:
-            (dict):
-        """
-        return self.users_base.get_users_emails(user_id_list)
 
     def create_welcome(
         self,
@@ -135,3 +116,23 @@ class Generator:
             (str): короткая ссылка
         """
         return pyshorteners.Shortener().clckru.short(url)
+
+    def create_info(self, notification: NotificationFromNotifications) -> None:
+        """Подготовка задач типа info для передачи воркеру.
+
+        Args:
+            notification(NotificationFromNotifications): уведомление
+        """
+        for emails_count in self.users_base.get_emails_all_users():
+            for email in emails_count:
+                task = TaskForWorker(
+                    template=notification.type,
+                    user_id=email.get("user_id"),
+                    targets=[NotificationTargets.email],
+                    email=email.get("email"),
+                    fields=notification.fields,
+                )
+                self.queue.send(
+                    settings.rb_transfer_queue,
+                    task,
+                )
