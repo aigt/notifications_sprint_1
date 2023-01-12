@@ -1,16 +1,16 @@
 version: '3.9'
 
 services:
-#  generator:
-#    build: ./generator
-#    env_file:
-#      - ./env_files/generator.env.example
-#    depends_on:
-#      - rabbitmq
-#    networks:
-#      - rabbitmq_net
-#      - mongo_net
-#      - users_net
+  generator:
+    build: ./generator
+    env_file:
+      - ./env_files/generator.env.example
+    depends_on:
+      - rabbitmq
+    networks:
+      - rabbitmq_net
+      - mongo_net
+      - users_net
 
   notification_handler:
     build: ./notification_handler
