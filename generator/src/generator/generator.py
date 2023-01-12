@@ -57,10 +57,16 @@ class Generator:
 
         Args:
             notification(NotificationFromNotifications): запрос из очереди.
+
+        Returns:
+            None
         """
-        users = self.ugc_base.get_users_by_movie_id(
-            notification.fields.get("movie_id"),
-        )
+        movie_id = notification.fields.get("movie_id")
+        if movie_id is None:
+            return None
+        users = self.ugc_base.get_users_by_movie_id(movie_id)
+        if users is None:
+            return None
         emails = self.users_base.get_users_emails(users)
 
         for email in emails:
