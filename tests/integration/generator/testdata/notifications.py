@@ -15,6 +15,12 @@ meta_1 = Meta(
     periodic=False,
 )
 
+meta_2 = Meta(
+    urgency=NotificationUrgency.immediate,
+    scale=NotificationScale.bulk,
+    periodic=False,
+)
+
 welcome_1 = NotificationFromNotifications(
     meta=meta_1,
     type=NotificationType.welcome,
@@ -24,4 +30,8 @@ welcome_1 = NotificationFromNotifications(
         "user_name": "user_1",
         "email": "test_1@gmail.com",
     },
+)
+
+new_series = NotificationFromNotifications(
+    meta=meta_2, type=NotificationType.show_subs, fields={"movie_id": "3b241101-e2bb-4255-8caf-4136c566a962"}
 )
