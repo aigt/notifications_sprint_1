@@ -1,3 +1,4 @@
+import json
 import logging
 from typing import Generator
 
@@ -14,17 +15,18 @@ def test_stub(
     email_queue = "email"
     notify_exchange = "notifications"
     pub_body = """{
-  "targets": [
-    "email"
-  ],
-  "email": "email@host.com",
-  "user_id": "3a815b88-c88e-4381-bcc6-fea73f052946",
-  "template": "info",
-  "fields": {
-    "title": "Привет.",
-    "text": "Это текст."
-  }
-}"""
+      "targets": [
+        "email"
+      ],
+      "email": "email@host.com",
+      "user_id": "3a815b88-c88e-4381-bcc6-fea73f052946",
+      "template": "info",
+      "fields": {
+        "title": "Привет.",
+        "text": "Это текст."
+      }
+    }
+    """
     rabbit_pub_channel.exchange_declare(exchange=notify_exchange, durable=True)
     rabbit_pub_channel.queue_declare(queue=worker_queue, durable=True)
     rabbit_sub_channel.queue_declare(queue=email_queue, durable=True)
@@ -40,10 +42,18 @@ def test_stub(
         auto_ack=False,
         inactivity_timeout=15,
     ):
-        logging.info(body)
-        assert (
-            body
-            == b'{"email":"email@host.com","content":"<!DOCTYPE html><html lang=\\"ru\\"><head><title>\\u0414\\u043b\\u044f \\u0438\\u043d\\u0444\\u043e\\u0440\\u043c\\u0430\\u0446\\u0438\\u0438.</title></head><body><h1>\\u041f\\u0440\\u0438\\u0432\\u0435\\u0442.</h1><p>\\u042d\\u0442\\u043e \\u0442\\u0435\\u043a\\u0441\\u0442.</p></body></html>"}'
-        )
-        rabbit_sub_channel.basic_ack(_method_frame.delivery_tag)
-        break
+        assert body is not None, "Consumed message is None"
+
+        if body is not None:
+            message = json.loads(body.decode())
+            logging.info(message)
+
+            expected_message = {
+                "email": "email@host.com",
+                "content": '<!DOCTYPE html><html lang="ru"><head><title>Для информации.</title></head><body><h1>Привет.</h1><p>Это текст.</p></body></html>',
+            }
+
+            assert message == expected_message
+
+            rabbit_sub_channel.basic_ack(_method_frame.delivery_tag)
+            break
