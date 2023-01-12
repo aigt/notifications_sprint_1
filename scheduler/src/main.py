@@ -1,13 +1,18 @@
 import pika
 
+from core.settings import get_settings
+from core.start_up import start_up
 
-def publish(channel, queue):
-    channel.basic_publish(exchange='',
+settings = get_settings()
+
+
+def publish(channel, exchange, queue, body):
+    channel.basic_publish(exchange=exchange,
                           routing_key=queue,
-                          body='Hello World!')
+                          body=body)
 
 def callback(ch, method, properties, body):
-    print(f'Messagerecieved: {body}')
+    print(f'Message recieved: {body}')
 
 def read(channel, queue, fn):
     channel.basic_consume(queue=queue,
@@ -17,13 +22,21 @@ def read(channel, queue, fn):
 
 
 if __name__ == "__main__":
-    credentials = pika.PlainCredentials('user', 'pass')
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost',
-                                                                   port=5672,
-                                                                   credentials=credentials))
+    start_up()
 
-    channel = connection.channel()
-
-    publish(channel, 'worker')
-    read(channel, 'worker', callback)
+    # credentials = pika.PlainCredentials('user', 'pass')
+    # connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost',
+    #                                                                port=5672,
+    #                                                                credentials=credentials))
+    #
+    # channel = connection.channel()
+    #
+    # publish(channel=channel,
+    #         exchange=settings.rb_exchange,
+    #         queue=settings.rb_transfer_queue,
+    #         body="Hello, World!"
+    #         )
+    # read(channel=channel,
+    #      queue=settings.rb_transfer_queue,
+    #      fn=callback)
 
