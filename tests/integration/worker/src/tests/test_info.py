@@ -3,6 +3,7 @@ import logging
 from typing import Generator
 
 import pytest
+from deepdiff import DeepDiff
 from pika.adapters.blocking_connection import BlockingChannel
 
 
@@ -53,7 +54,7 @@ def test_stub(
                 "content": '<!DOCTYPE html><html lang="ru"><head><title>Для информации.</title></head><body><h1>Привет.</h1><p>Это текст.</p></body></html>',
             }
 
-            assert message == expected_message
+            assert not DeepDiff(message, expected_message, ignore_order=True)
 
             rabbit_sub_channel.basic_ack(_method_frame.delivery_tag)
             break
