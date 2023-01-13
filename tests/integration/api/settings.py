@@ -19,6 +19,7 @@ class Settings(BaseSettings):
     rb_password: str = Field("pass")
     rb_queue: str = Field("notifications")
     rb_exchange: str = Field("notifications")
+    rb_emails_queue: str = Field("email")
 
     # Настройки MongoDB
     mongo_dsn = Field("mongodb://localhost:27017")

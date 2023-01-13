@@ -4,27 +4,21 @@ import orjson
 from pika.adapters.blocking_connection import BlockingChannel
 from requests import Session  # type: ignore
 from settings import get_settings
-from testdata.testdata import EMAIL, data_1
+from testdata.testdata import data_welcome
 
 settings = get_settings()
 
 
-def test_add_notification_200(http_con: Session, rabbit_channel: BlockingChannel) -> None:
+def test_add_notification_welcome_200(http_con: Session, rabbit_channel: BlockingChannel) -> None:
     """Проверка работы и возвращаемых данных ендпоинта api/v1/welocme."""
 
-    response = http_con.post(f"{settings.url}/add_notification", json=data_1)
+    response = http_con.post(f"{settings.url}/add_notification", json=data_welcome)
     assert response.status_code == HTTPStatus.OK
 
-    method_frame, _, payload = rabbit_channel.basic_get(settings.rb_queue)
+    method_frame, _, payload = rabbit_channel.basic_get(settings.rb_emails_queue)
     payload = orjson.loads(payload)
-    assert payload.get("type") == data_1.get("type")
-    assert payload.get("fields") == data_1.get("fields")
 
-    meta = payload.get("meta")
-    data_1_meta = data_1.get("meta")
-    assert meta.get("urgency") == data_1_meta.get("urgency")
-    assert meta.get("scale") == data_1_meta.get("scale")
-    assert meta.get("periodic") is data_1_meta.get("periodic")
+    assert payload.get("email") == data_welcome.get("fields").get("email")
 
     rabbit_channel.basic_ack(method_frame.delivery_tag)
 
