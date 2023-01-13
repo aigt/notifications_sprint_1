@@ -54,6 +54,18 @@ VALUES
             '<p>{{ text }}</p>'
           '</body>'
           '</html>'
+    ),
+    (
+          'show_subs'
+
+        , '<!DOCTYPE html>'
+          '<html lang="ru">'
+          '<head><title>Вышла новая серия.</title></head>'
+          '<body>'
+            '<h1>{{ title }}</h1>'
+            '<p>{{ text }}</p>'
+          '</body>'
+          '</html>'
     );
 
 INSERT INTO notify_templates.history (

@@ -11,9 +11,9 @@ data_welcome = {
 
 data_info = {
     "meta": {"urgency": "immediate", "scale": "bulk", "periodic": False},
-    "type": "welcome",
+    "type": "info",
     "custom_template": "string",
-    "fields": {"email": EMAIL, "user_id": str(uuid.uuid4()), "confirmation_url": "http://localhost:8000/api/"},
+    "fields": {"content": "some content"},
 }
 
 data_show_subs = {

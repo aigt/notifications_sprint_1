@@ -1,4 +1,3 @@
-import time
 from http import HTTPStatus
 
 import orjson
@@ -17,11 +16,12 @@ def test_add_notification_new_series_200(
 
     response = http_con.post(f"{settings.url}/add_notification", json=data_show_subs)
     assert response.status_code == HTTPStatus.OK
-    time.sleep(5)
-    method_frame, _, payload = rabbit_channel.basic_get(settings.rb_emails_queue, auto_ack=True)
-    payload = orjson.loads(payload)
+    for method_frame, _, payload in rabbit_channel.consume(settings.rb_emails_queue, auto_ack=True):
+        payload = orjson.loads(payload)
 
-    assert payload.get("email") == "user_2@gmail.com"
+        assert payload.get("email") == "user_2@gmail.com"
+        if method_frame.delivery_tag == 1:
+            break
 
 
 def test_welcome_errors(http_con: Session) -> None:
