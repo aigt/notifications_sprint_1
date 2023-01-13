@@ -14,7 +14,7 @@ settings = get_settings()
 def postgres_cur() -> Generator:
     """postgres курсор."""
     con = psycopg.connect(
-        host=settings.postgres_host,
+        host=settings.postgres_users_host,
         port=settings.postgres_port,
         dbname=settings.users_db,
         user=settings.postgres_user,

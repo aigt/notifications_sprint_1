@@ -28,7 +28,7 @@ class Settings(BaseSettings):
     # Настройки Postgres
     postgres_user: str = Field("app")
     postgres_password: str = Field("postgres")
-    postgres_host: str = Field("localhost")
+    postgres_users_host: str = Field("localhost")
     postgres_port: int = Field(5432)
 
     # Postgres Базы

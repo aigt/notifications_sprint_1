@@ -47,37 +47,12 @@ services:
       - templates_net
 
   mongo1:
-    hostname: mongo1
-    container_name: localmongo1
     image: mongo
-    restart: always
-    environment:
-      - MONGO_INITDB_DATABASE=ugc_movies
-    expose:
-      - "27017"
+    command: mongod --dbpath /data/db --port 27017
+    ports:
+      - "27017:27017"
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - mongo_vol:/data/db
-    entrypoint:
-      [
-        "/usr/bin/mongod",
-        "--bind_ip_all",
-        "--replSet",
-        "rs0",
-        "--dbpath",
-        "/data/db"
-      ]
-    networks:
-      - mongo_net
-
-  mongosetup:
-    image: mongo
-    depends_on:
-      - mongo1
-    volumes:
-      - ../../../mongo/scripts:/scripts
-    restart: "no"
-    entrypoint: [ "bash", "/scripts/mongo_setup.sh" ]
     networks:
       - mongo_net
 
@@ -92,23 +67,20 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
-    volumes:
-      - rabbitmq_vol:/var/lib/rabbitmq/
     networks:
       - rabbitmq_net
 
   templates_db:
     image: postgres:15.0-alpine
     volumes:
-      - templates_vol:/var/lib/postgresql/data/
       - ../../../templates_db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
     env_file:
       - ../../../env_files/templates_db.env.example
     environment:
       - POSTGRES_HOST=templates_db
       - POSTGRES_PORT=5432
-    ports:
-      - "5432:5432"
+    expose:
+      - "5432"
     healthcheck:
       test:
         [
@@ -130,8 +102,8 @@ services:
     environment:
       - POSTGRES_HOST=users_db
       - POSTGRES_PORT=5432
-    expose:
-      - "5432"
+    ports:
+      - "5432:5432"
     healthcheck:
       test:
         [
@@ -147,7 +119,6 @@ services:
   notifications_db:
     image: postgres:15.0-alpine
     volumes:
-      - notifications_vol:/var/lib/postgresql/data/
       - ../../../notifications_db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
     env_file:
       - ../../../env_files/notifications_db.env.example
@@ -171,7 +142,6 @@ services:
   history_db:
     image: postgres:15.0-alpine
     volumes:
-      - history_vol:/var/lib/postgresql/data/
       - ../../../history_db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
     env_file:
       - ../../../env_files/history_db.env.example
@@ -213,15 +183,6 @@ services:
       - rabbitmq_net
       - users_net
       - notifications_net
-
-
-volumes:
-  mongo_vol:
-  rabbitmq_vol:
-  templates_vol:
-  notifications_vol:
-  history_vol:
-
 
 networks:
   mongo_net:
