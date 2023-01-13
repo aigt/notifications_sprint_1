@@ -1,5 +1,7 @@
 import pika
 
+import time
+
 from core.settings import get_settings
 from core.start_up import start_up
 
@@ -23,6 +25,9 @@ def read(channel, queue, fn):
 
 if __name__ == "__main__":
     start_up()
+    while True:
+        print('ALLLLOAA')
+        time.sleep(5)
 
     # credentials = pika.PlainCredentials('user', 'pass')
     # connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost',

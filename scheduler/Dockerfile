@@ -2,6 +2,7 @@ FROM python:3.10 as requirements-stage
 
 WORKDIR /tmp
 
+# hadolint ignore=DL3013
 RUN  pip install --upgrade pip --no-cache-dir && \
     pip install poetry==1.2.2 --no-cache-dir
 
