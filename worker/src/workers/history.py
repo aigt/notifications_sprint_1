@@ -28,7 +28,7 @@ class HistoryWorker(Worker):
         Raises:
             NoUserIdForHistoryWorkerError: Если не указан user_id.
         """
-        user_id: Optional[str] = message.fields.get("user_id", None)
+        user_id: Optional[str] = message.user_id
         if user_id is None:
             raise NoUserIdForHistoryWorkerError()
         return user_id
