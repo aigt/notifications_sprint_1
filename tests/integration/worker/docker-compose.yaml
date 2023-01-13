@@ -6,9 +6,9 @@ services:
     build: ../../../worker
     env_file:
       - ./env_files/worker.env
-    networks:
-      - rabbitmq_net
-      - templates_net
+    depends_on:
+      templates_db:
+        condition: service_healthy
 
   rabbitmq:
     image: rabbitmq:3.11-alpine
@@ -17,8 +17,6 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=user
       - RABBITMQ_DEFAULT_PASS=pass
-    networks:
-      - rabbitmq_net
 
   templates_db:
     image: postgres:15.0-alpine
@@ -38,8 +36,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    networks:
-      - templates_net
 
   history_db:
     image: postgres:15.0-alpine
@@ -59,8 +55,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    networks:
-      - history_net
 
   tests:
     build: .
@@ -70,10 +64,3 @@ services:
       - ./test.env
     entrypoint: >
       sh -c "python -m pytest -vv"
-    networks:
-      - rabbitmq_net
-
-networks:
-  rabbitmq_net:
-  templates_net:
-  history_net:

@@ -1,4 +1,4 @@
-from pydantic import BaseSettings, Field
+from pydantic import BaseSettings, Field, PostgresDsn
 
 
 class Settings(BaseSettings):
@@ -7,6 +7,12 @@ class Settings(BaseSettings):
     # Название проекта. Используется в Swagger-документации
     project_name: str = Field(default="Worker")
     app_version: str = "1.0.0"
+
+    # Настройки templates_db
+    tdb_dsn: PostgresDsn = Field(
+        default="postgresql://app:postgres@templates_db:5432/templates",
+    )
+    tdb_template_sql_query_file = "sql/tempate.sql"
 
     # Настройки Rabbitmq
     rb_host: str = Field("localhost")
