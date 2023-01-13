@@ -1,12 +1,10 @@
 import pika
 import psycopg
-
 from pika import BlockingConnection, ConnectionParameters
 
 from core.settings import get_settings
-from db.rabbit import rabbitmq
 from db.postgres import postgres
-
+from db.rabbit import rabbitmq
 
 settings = get_settings()
 

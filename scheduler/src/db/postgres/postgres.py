@@ -22,7 +22,7 @@ class Postgres:
     def __init__(self, connect: Connection):
         self._con = connect
 
-    def read_notifications(self):
+    def read_notifications(self) -> str:
         with self._con.cursor() as cur:
             sql = """
                 SELECT * FROM notify_schedule.personal;
@@ -31,7 +31,6 @@ class Postgres:
             result = cur.fetchall()
         return f"THE TEST RESULT IS {result}"
 
-        # self._con.commit()
 
 @lru_cache()
 def get_postgres() -> Postgres:

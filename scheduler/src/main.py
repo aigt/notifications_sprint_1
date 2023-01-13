@@ -1,17 +1,14 @@
-import pika
-
 import time
 
 from core.settings import get_settings
 from core.start_up import start_up
-from db.rabbit.rabbitmq import get_rabbit
 from db.postgres.postgres import get_postgres
-from db.rabbit.calback import callback
+from db.rabbit.rabbitmq import get_rabbit
 
 settings = get_settings()
 
 
-def main():
+def main() -> None:
     start_up()
     rabbit = get_rabbit()
     postgres = get_postgres()
@@ -20,6 +17,7 @@ def main():
         print(recieved_msg)
         rabbit.send("generator", recieved_msg)
         time.sleep(5)
+
 
 if __name__ == "__main__":
     time.sleep(10)

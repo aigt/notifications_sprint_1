@@ -5,7 +5,6 @@ from pika import BlockingConnection
 
 from core.settings import get_settings
 
-
 rabbitmq_con: Optional[BlockingConnection] = None
 
 settings = get_settings()
@@ -36,7 +35,7 @@ class Rabbit:
         self._channel.basic_consume(settings.rb_receiving_queue, callback)
         self._channel.start_consuming()
 
-    def send(self, queue: str, notification) -> None:
+    def send(self, queue: str, notification: str) -> None:
         """Отправление данных в очередь.
 
         Args:

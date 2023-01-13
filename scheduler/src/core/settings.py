@@ -5,6 +5,7 @@ from pydantic import BaseSettings, Field
 
 class Settings(BaseSettings):
     """Настройки приложения."""
+
     # Таблицы Postgres
     t_bulk: str = "bulk"
     t_individual: str = "individual"
@@ -24,6 +25,7 @@ class Settings(BaseSettings):
     rb_receiving_queue: str = Field("generator")
     rb_transfer_queue: str = Field("generator")
     rb_exchange: str = Field("")
+
 
 @lru_cache()
 def get_settings() -> Settings:
