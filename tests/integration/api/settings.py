@@ -20,6 +20,19 @@ class Settings(BaseSettings):
     rb_queue: str = Field("notifications")
     rb_exchange: str = Field("notifications")
 
+    # Настройки MongoDB
+    mongo_dsn = Field("mongodb://localhost:27017")
+    mongo_db = Field("ugc_movies")
+
+    # Настройки Postgres
+    postgres_user: str = Field("app")
+    postgres_password: str = Field("postgres")
+    postgres_host: str = Field("localhost")
+    postgres_port: int = Field(5432)
+
+    # Postgres Базы
+    users_db: str = Field("users")
+
 
 @lru_cache()
 def get_settings() -> Settings:

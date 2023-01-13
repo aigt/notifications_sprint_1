@@ -11,6 +11,8 @@ services:
       - rabbitmq_net
       - mongo_net
       - users_net
+    logging:
+      driver: none
 
   notification_handler:
     build: ../../../notification_handler
@@ -21,6 +23,8 @@ services:
     networks:
        - rabbitmq_net
        - notifications_net
+    logging:
+      driver: none
 
   app:
     build: ../../../notification_api
@@ -37,6 +41,9 @@ services:
       - rabbitmq
     networks:
       - rabbitmq_net
+    logging:
+      driver: none
+
 
   worker:
     build: ../../../worker
@@ -45,6 +52,9 @@ services:
     networks:
       - rabbitmq_net
       - templates_net
+    logging:
+      driver: none
+
 
   mongo1:
     hostname: mongo1
@@ -69,6 +79,9 @@ services:
       ]
     networks:
       - mongo_net
+    logging:
+      driver: none
+
 
   mongosetup:
     image: mongo
@@ -80,6 +93,9 @@ services:
     entrypoint: [ "bash", "/scripts/mongo_setup.sh" ]
     networks:
       - mongo_net
+    logging:
+      driver: none
+
 
   rabbitmq:
     image: rabbitmq:3.11-management-alpine
@@ -96,6 +112,9 @@ services:
       - rabbitmq_vol:/var/lib/rabbitmq/
     networks:
       - rabbitmq_net
+#    logging:
+#      driver: none
+
 
   templates_db:
     image: postgres:15.0-alpine
@@ -120,6 +139,9 @@ services:
       retries: 5
     networks:
       - templates_net
+    logging:
+      driver: none
+
 
   users_db:
     image: postgres:15.0-alpine
@@ -143,6 +165,9 @@ services:
       retries: 5
     networks:
       - users_net
+    logging:
+      driver: none
+
 
   notifications_db:
     image: postgres:15.0-alpine
@@ -167,6 +192,9 @@ services:
       retries: 5
     networks:
       - notifications_net
+    logging:
+      driver: none
+
 
   history_db:
     image: postgres:15.0-alpine
@@ -191,17 +219,33 @@ services:
       retries: 5
     networks:
       - history_net
+    logging:
+      driver: none
 
   tests:
     build: .
     depends_on:
       - app
       - rabbitmq
+      - users_db
+      - generator
+      - notification_handler
+      - notifications_db
+      - templates_db
+      - worker
     env_file:
       - test.env
     entrypoint: >
       sh -c "python3 rabbit_add_queue.py &&
               python3 -m pytest -v"
+    networks:
+      - mongo_net
+      - rabbitmq_net
+      - templates_net
+      - users_net
+      - notifications_net
+      - history_net
+
 
 volumes:
   mongo_vol:
