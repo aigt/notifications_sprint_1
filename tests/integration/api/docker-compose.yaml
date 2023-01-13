@@ -1,13 +1,33 @@
 version: '3.9'
 
 services:
+  generator:
+    build: ../../../generator
+    env_file:
+      - ../../../env_files/generator.env.example
+    depends_on:
+      - rabbitmq
+    networks:
+      - rabbitmq_net
+      - mongo_net
+      - users_net
+
+  notification_handler:
+    build: ../../../notification_handler
+    env_file:
+      - ../../../env_files/notification_handler.env.example
+    depends_on:
+      - rabbitmq
+    networks:
+       - rabbitmq_net
+       - notifications_net
 
   app:
     build: ../../../notification_api
     ports:
       - "8000:8000"
     env_file:
-      - test.env
+      - ../../../env_files/api.env.example
     healthcheck:
       test: curl --fail http://app:8000/api/health/ || exit 1
       interval: 10s
@@ -15,14 +35,162 @@ services:
       retries: 20
     depends_on:
       - rabbitmq
+    networks:
+      - rabbitmq_net
+
+  worker:
+    build: ../../../worker
+    env_file:
+      - ../../../env_files/worker.env.example
+    networks:
+      - rabbitmq_net
+      - templates_net
+
+  mongo1:
+    hostname: mongo1
+    container_name: localmongo1
+    image: mongo
+    restart: always
+    environment:
+      - MONGO_INITDB_DATABASE=ugc_movies
+    expose:
+      - "27017"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - mongo_vol:/data/db
+    entrypoint:
+      [
+        "/usr/bin/mongod",
+        "--bind_ip_all",
+        "--replSet",
+        "rs0",
+        "--dbpath",
+        "/data/db"
+      ]
+    networks:
+      - mongo_net
+
+  mongosetup:
+    image: mongo
+    depends_on:
+      - mongo1
+    volumes:
+      - ../../../mongo/scripts:/scripts
+    restart: "no"
+    entrypoint: [ "bash", "/scripts/mongo_setup.sh" ]
+    networks:
+      - mongo_net
 
   rabbitmq:
-    image: rabbitmq:3.11-alpine
-    ports:
-      - "5672:5672"
+    image: rabbitmq:3.11-management-alpine
+    expose:
+      - "5672"
+      - "15672"
     environment:
       - RABBITMQ_DEFAULT_USER=user
       - RABBITMQ_DEFAULT_PASS=pass
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_vol:/var/lib/rabbitmq/
+    networks:
+      - rabbitmq_net
+
+  templates_db:
+    image: postgres:15.0-alpine
+    volumes:
+      - templates_vol:/var/lib/postgresql/data/
+      - ../../../templates_db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
+    env_file:
+      - ../../../env_files/templates_db.env.example
+    environment:
+      - POSTGRES_HOST=templates_db
+      - POSTGRES_PORT=5432
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -d $$POSTGRES_DB -h $$POSTGRES_HOST -p $$POSTGRES_PORT -U $$POSTGRES_USER"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - templates_net
+
+  users_db:
+    image: postgres:15.0-alpine
+    volumes:
+      - ../../../users_db/:/docker-entrypoint-initdb.d
+    env_file:
+      - ../../../env_files/users_db.env.example
+    environment:
+      - POSTGRES_HOST=users_db
+      - POSTGRES_PORT=5432
+    expose:
+      - "5432"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -d $$POSTGRES_DB -h $$POSTGRES_HOST -p $$POSTGRES_PORT -U $$POSTGRES_USER"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - users_net
+
+  notifications_db:
+    image: postgres:15.0-alpine
+    volumes:
+      - notifications_vol:/var/lib/postgresql/data/
+      - ../../../notifications_db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
+    env_file:
+      - ../../../env_files/notifications_db.env.example
+    environment:
+      - POSTGRES_HOST=notifications_db
+      - POSTGRES_PORT=5432
+    expose:
+      - "5432"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -d $$POSTGRES_DB -h $$POSTGRES_HOST -p $$POSTGRES_PORT -U $$POSTGRES_USER"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - notifications_net
+
+  history_db:
+    image: postgres:15.0-alpine
+    volumes:
+      - history_vol:/var/lib/postgresql/data/
+      - ../../../history_db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
+    env_file:
+      - ../../../env_files/history_db.env.example
+    environment:
+      - POSTGRES_HOST=history_db
+      - POSTGRES_PORT=5432
+    expose:
+      - "5432"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -d $$POSTGRES_DB -h $$POSTGRES_HOST -p $$POSTGRES_PORT -U $$POSTGRES_USER"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - history_net
 
   tests:
     build: .
@@ -34,3 +202,19 @@ services:
     entrypoint: >
       sh -c "python3 rabbit_add_queue.py &&
               python3 -m pytest -v"
+
+volumes:
+  mongo_vol:
+  rabbitmq_vol:
+  templates_vol:
+  notifications_vol:
+  history_vol:
+
+
+networks:
+  mongo_net:
+  rabbitmq_net:
+  templates_net:
+  users_net:
+  notifications_net:
+  history_net:
