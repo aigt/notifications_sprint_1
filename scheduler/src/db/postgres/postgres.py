@@ -23,13 +23,14 @@ class Postgres:
         self._con = connect
 
     def read_notifications(self) -> str:
+        """Чтение данных из очереди."""
         with self._con.cursor() as cur:
             sql = """
                 SELECT * FROM notify_schedule.personal;
             """
             cur.execute(sql)
-            result = cur.fetchall()
-        return f"THE TEST RESULT IS {result}"
+            read_msg = cur.fetchall()
+        return f"THE TEST RESULT IS {read_msg}"
 
 
 @lru_cache()

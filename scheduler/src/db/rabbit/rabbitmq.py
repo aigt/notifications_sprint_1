@@ -1,5 +1,5 @@
 from functools import lru_cache
-from typing import Callable, Optional
+from typing import Any, Callable, Optional
 
 from pika import BlockingConnection
 
@@ -35,7 +35,7 @@ class Rabbit:
         self._channel.basic_consume(settings.rb_receiving_queue, callback)
         self._channel.start_consuming()
 
-    def send(self, queue: str, notification: str) -> None:
+    def send(self, queue: str, notification: Any) -> None:
         """Отправление данных в очередь.
 
         Args:

@@ -9,12 +9,12 @@ settings = get_settings()
 
 
 def main() -> None:
+    """Запуск всех процессов."""
     start_up()
     rabbit = get_rabbit()
     postgres = get_postgres()
     while True:
         recieved_msg = postgres.read_notifications()
-        print(recieved_msg)
         rabbit.send("generator", recieved_msg)
         time.sleep(5)
 
