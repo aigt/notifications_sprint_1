@@ -7,10 +7,11 @@ from deepdiff import DeepDiff
 from pika.adapters.blocking_connection import BlockingChannel
 
 
-def test_stub(
+def test_info(
     rabbit_pub_channel: BlockingChannel,
     rabbit_sub_channel: BlockingChannel,
     templates_db: Generator,
+    empty_history_db: Generator,
 ) -> None:
     worker_queue = "worker"
     email_queue = "email"
