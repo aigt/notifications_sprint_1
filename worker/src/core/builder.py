@@ -49,8 +49,14 @@ def build() -> WorkerApp:
         settings.tdb_dsn.host,
         settings.tdb_dsn.port,
     )
+    logging.info(
+        "History DB host:port: %s:%s",  # noqa: WPS323
+        settings.hdb_dsn.host,
+        settings.hdb_dsn.port,
+    )
 
     templates_query = query_loader.load_sql(settings.tdb_template_sql_query_file)
+    add_history_query = query_loader.load_sql(settings.hdb_add_history_sql_query_file)
 
     templates_storage = TemplatesStorage(
         coninfo=settings.tdb_dsn,
@@ -113,8 +119,8 @@ def build() -> WorkerApp:
     # history_worker выполняется для всех сообщений, поэтому он устанавливается
     # отдельно от указываемых в сообщениях
     history_publisher = HistoryPublisher(
-        coninfo="",
-        query="",
+        coninfo=settings.hdb_dsn,
+        query=add_history_query,
     )
     history_worker = HistoryWorker(publisher=history_publisher, render=messages_render)
 
