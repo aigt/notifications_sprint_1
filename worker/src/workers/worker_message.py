@@ -14,6 +14,8 @@ class WorkerMessage(BaseModel):
     targets: List[TargetWorkerName] = Field(default=[])
     # Адрес, куда отправить письмо
     email: Optional[str]
+    # Для сохранения в историю оповещений
+    user_id: Optional[str]
     # Шаблон для данной письма
     template: str
     # Набор стандартных полей для шаблона
