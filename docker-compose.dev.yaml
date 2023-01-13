@@ -124,14 +124,14 @@ services:
   users_db:
     image: postgres:15.0-alpine
     volumes:
-      - users_vol:/var/lib/postgresql/data/
+      - ./users_db/:/docker-entrypoint-initdb.d
     env_file:
       - env_files/users_db.env.example
     environment:
       - POSTGRES_HOST=users_db
       - POSTGRES_PORT=5432
-    expose:
-      - "5432"
+    ports:
+      - "5432:5432"
     healthcheck:
       test:
         [
@@ -196,7 +196,6 @@ volumes:
   mongo_vol:
   rabbitmq_vol:
   templates_vol:
-  users_vol:
   notifications_vol:
   history_vol:
 
