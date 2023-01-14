@@ -63,6 +63,7 @@ VALUES
           '<head><title>Вышла новая серия.</title></head>'
           '<body>'
             '<h1>{{ title }}</h1>'
+            '<h2>{{ movie }}</h2>'
             '<p>{{ text }}</p>'
           '</body>'
           '</html>'
@@ -85,6 +86,14 @@ VALUES
           'info'
 
         , '{{ title }}\n'
+          '\n'
+          '{{ text }}'
+    ),
+    (
+          'show_subs'
+
+        , '{{ title }}\n'
+          '{{ movie }}\n'
           '\n'
           '{{ text }}'
     );
