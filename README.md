@@ -49,6 +49,7 @@ pre-commit run --all-files
 В инфраструктуру сервиса онлайн-кинотеатр входят следующие микросервисы:
 
 - **Admin Panel** - панель для администрирования базы фильмов
+  - https://github.com/aigt/new_admin_panel_sprint_1
 
 - **API** - сервис предоставляющий интерфейс для работы пользователей с базой фильмов:
   - https://github.com/aigt/Async_API_sprint_2
@@ -65,6 +66,21 @@ pre-commit run --all-files
 - **Notifications Service** - Сервис оповещений:
   - https://github.com/aigt/notifications_sprint_1
 
+## Запуск сервиса
+
+1. В директории [env_files](env_files) скопируйте и переименуйте файлы `*.env.example` в `*.env`, внесите в скопированные файлы необходимые правки
+
+2. В корневой дериктории приложения
+```commandline
+docker-compose up --build -d
+```
+
+### Запуск сервиса в режиме разработки
+
+1. В корневой дериктории приложения
+```commandline
+docker-compose -f docker-compose.dev.yaml up --build -d
+```
 
 ## Ссылка на данный репозиторий
 
