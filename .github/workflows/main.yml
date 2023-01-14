@@ -115,6 +115,10 @@ jobs:
             path: "tests/integration/notify_handler"
             app_path: "notification_handler"
 
+          - service_name: "Generator"
+            path: "tests/integration/generator"
+            app_path: "generator"
+
     steps:
       - uses: actions/checkout@v3
         with:
