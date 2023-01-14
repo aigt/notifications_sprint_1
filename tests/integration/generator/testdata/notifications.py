@@ -35,3 +35,13 @@ welcome_1 = NotificationFromNotifications(
 new_series = NotificationFromNotifications(
     meta=meta_2, type=NotificationType.show_subs, fields={"movie_id": "3b241101-e2bb-4255-8caf-4136c566a962"}
 )
+
+meta_info = Meta(
+    urgency=NotificationUrgency.usual,
+    scale=NotificationScale.bulk,
+    periodic=False,
+)
+
+info = NotificationFromNotifications(
+    meta=meta_info, type=NotificationType.info, fields={"content": "something content"}
+)

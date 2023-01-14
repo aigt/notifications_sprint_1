@@ -5,9 +5,11 @@ from pika.credentials import PlainCredentials
 
 from brokers.rabbit import RabbitMQ
 from core.config import Settings
+from services import query_loader
 from services.consumer import Consumer
 from services.email_publisher import EmailPublisher
-from services.email_render import EmailRender
+from services.render import Render
+from services.templates_storage import TemplatesStorage
 from worker_app import WorkerApp
 from workers.email import EmailWorker
 from workers.history import HistoryWorker
@@ -22,7 +24,7 @@ def build() -> WorkerApp:
     """
     settings = Settings()
 
-    logging.info("Set upping:")
+    logging.info("Setting up:")
     logging.info(
         "RabbitMQ host:port: %s:%s",  # noqa: WPS323
         settings.rb_host,
@@ -39,6 +41,18 @@ def build() -> WorkerApp:
     logging.info(
         "email_queue_name: %s",  # noqa: WPS323
         settings.rb_email_queue_name,
+    )
+    logging.info(
+        "Templates DB host:port: %s:%s",  # noqa: WPS323
+        settings.tdb_dsn.host,
+        settings.tdb_dsn.port,
+    )
+
+    templates_query = query_loader.load_sql(settings.tdb_template_sql_query_file)
+
+    templates_storage = TemplatesStorage(
+        coninfo=settings.tdb_dsn,
+        query=templates_query,
     )
 
     credentials = PlainCredentials(
@@ -81,10 +95,12 @@ def build() -> WorkerApp:
         exchange=settings.rb_email_exchange_name,
         queue=settings.rb_email_queue_name,
     )
-    email_render = EmailRender()
+    messages_render = Render(
+        templates_storage=templates_storage,
+    )
     email_worker = EmailWorker(
         email_publisher=email_publisher,
-        email_render=email_render,
+        email_render=messages_render,
     )
 
     workers: Dict[TargetWorkerName, Worker] = {
