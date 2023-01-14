@@ -1,4 +1,3 @@
-import json
 import logging
 from uuid import UUID
 
@@ -59,26 +58,3 @@ class HistoryPublisher(Publisher):
                     "Saved history message: %s",  # noqa: WPS323
                     last_item,
                 )
-
-    def publish(self, email: str, email_content: str) -> None:
-        """Добавить в очередь на отправку письмо.
-
-        Args:
-            email (str): Email, на который отправить письмо.
-            email_content (str): Содержимое письма.
-        """
-        message = {"email": email, "content": email_content}
-        body = json.dumps(
-            obj=message,
-            separators=(",", ":"),
-            ensure_ascii=False,
-        )
-
-        self._channel.basic_publish(
-            exchange=self._exchange,
-            routing_key=self._queue,
-            body=body,
-            properties=self.properties,
-        )
-
-        logging.info("Worker EmailPublisher published email message")
