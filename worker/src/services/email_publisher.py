@@ -4,8 +4,10 @@ import logging
 from pika.adapters.blocking_connection import BlockingChannel
 from pika.spec import BasicProperties
 
+from workers.worker import Publisher
 
-class EmailPublisher:
+
+class EmailPublisher(Publisher):
     """Сервис публикации писем в очередь."""
 
     properties = BasicProperties(
@@ -24,14 +26,14 @@ class EmailPublisher:
         self._exchange = exchange
         self._queue = queue
 
-    def publish(self, email: str, email_content: str) -> None:
+    def __call__(self, client_id: str, message_content: str) -> None:
         """Добавить в очередь на отправку письмо.
 
         Args:
-            email (str): Email, на который отправить письмо.
-            email_content (str): Содержимое письма.
+            client_id (str): Email, на который отправить письмо.
+            message_content (str): Содержимое письма.
         """
-        message = {"email": email, "content": email_content}
+        message = {"email": client_id, "content": message_content}
         body = json.dumps(
             obj=message,
             separators=(",", ":"),

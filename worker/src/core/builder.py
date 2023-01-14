@@ -8,12 +8,14 @@ from core.config import Settings
 from services import query_loader
 from services.consumer import Consumer
 from services.email_publisher import EmailPublisher
+from services.history_publisher import HistoryPublisher
 from services.render import Render
 from services.templates_storage import TemplatesStorage
 from worker_app import WorkerApp
 from workers.email import EmailWorker
 from workers.history import HistoryWorker
-from workers.worker import TargetWorkerName, Worker
+from workers.worker import Worker
+from workers.worker_message import TargetWorkerName
 
 
 def build() -> WorkerApp:
@@ -47,8 +49,14 @@ def build() -> WorkerApp:
         settings.tdb_dsn.host,
         settings.tdb_dsn.port,
     )
+    logging.info(
+        "History DB host:port: %s:%s",  # noqa: WPS323
+        settings.hdb_dsn.host,
+        settings.hdb_dsn.port,
+    )
 
     templates_query = query_loader.load_sql(settings.tdb_template_sql_query_file)
+    add_history_query = query_loader.load_sql(settings.hdb_add_history_sql_query_file)
 
     templates_storage = TemplatesStorage(
         coninfo=settings.tdb_dsn,
@@ -90,17 +98,18 @@ def build() -> WorkerApp:
         durable=True,
     )
 
+    messages_render = Render(
+        templates_storage=templates_storage,
+    )
+
     email_publisher = EmailPublisher(
         email_rabbit_channel=email_worker_channel,
         exchange=settings.rb_email_exchange_name,
         queue=settings.rb_email_queue_name,
     )
-    messages_render = Render(
-        templates_storage=templates_storage,
-    )
     email_worker = EmailWorker(
-        email_publisher=email_publisher,
-        email_render=messages_render,
+        publisher=email_publisher,
+        render=messages_render,
     )
 
     workers: Dict[TargetWorkerName, Worker] = {
@@ -109,7 +118,11 @@ def build() -> WorkerApp:
 
     # history_worker выполняется для всех сообщений, поэтому он устанавливается
     # отдельно от указываемых в сообщениях
-    history_worker = HistoryWorker()
+    history_publisher = HistoryPublisher(
+        coninfo=settings.hdb_dsn,
+        query=add_history_query,
+    )
+    history_worker = HistoryWorker(publisher=history_publisher, render=messages_render)
 
     subscriber = Consumer(
         workers=workers,

@@ -14,6 +14,12 @@ class Settings(BaseSettings):
     )
     tdb_template_sql_query_file = "sql/tempate.sql"
 
+    # Настройки history_db
+    hdb_dsn: PostgresDsn = Field(
+        default="postgresql://app:postgres@history_db:5432/history",
+    )
+    hdb_add_history_sql_query_file = "sql/add_history.sql"
+
     # Настройки Rabbitmq
     rb_host: str = Field("localhost")
     rb_port: int = Field(5672)

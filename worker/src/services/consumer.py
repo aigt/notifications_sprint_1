@@ -5,7 +5,8 @@ from pika.adapters.blocking_connection import BlockingChannel
 from pika.spec import Basic, BasicProperties
 
 from errors.exceptions import NoRequiredWorkerError
-from workers.worker import TargetWorkerName, Worker, WorkerMessage
+from workers.worker import Worker
+from workers.worker_message import TargetWorkerName, WorkerMessage
 
 
 class Consumer:

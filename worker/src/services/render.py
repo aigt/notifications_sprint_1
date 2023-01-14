@@ -4,7 +4,7 @@ from typing import Dict
 from jinja2 import BaseLoader, Environment
 
 from services.templates_storage import TemplatesStorage
-from workers.worker import MessageFieldName, MessageFieldValue
+from workers.worker_message import MessageFieldName, MessageFieldValue
 
 
 class Render:
