@@ -65,7 +65,7 @@ class Generator:
         if movie_id is None:
             return None
         users = self.ugc_base.get_users_by_movie_id(movie_id)
-        if users is None:
+        if users is None or len(users) == 0:
             return None
         emails = self.users_base.get_users_emails(users)
 
