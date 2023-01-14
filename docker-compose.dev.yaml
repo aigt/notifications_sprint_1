@@ -56,6 +56,17 @@ services:
       - rabbitmq_net
       - templates_net
 
+  scheduler:
+    build: ./scheduler
+    env_file:
+      - env_files/scheduler.env.example
+    depends_on:
+      - rabbitmq
+      - notifications_db
+    networks:
+      - rabbitmq_net
+      - notifications_net
+
   mongo1:
     hostname: mongo1
     container_name: localmongo1
