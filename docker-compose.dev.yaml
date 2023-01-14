@@ -22,6 +22,16 @@ services:
        - rabbitmq_net
        - notifications_net
 
+  email_handler:
+    build: ./email_handler
+    env_file:
+      - ./env_files/email_handler.env.example
+    depends_on:
+      - rabbitmq
+    networks:
+      - rabbitmq_net
+      - notifications_net
+
   app:
     build: ./notification_api
     ports:
