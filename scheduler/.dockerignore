@@ -2,6 +2,7 @@ venv
 .vscode
 .idea
 .pytest_cache
+poetry.lock
 README.md
 __pycache__
 Dockerfile

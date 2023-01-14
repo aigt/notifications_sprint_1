@@ -1,7 +1,8 @@
 from functools import lru_cache
-from typing import Optional
+from typing import Any, Optional
 
 from psycopg import Connection
+from psycopg.rows import dict_row
 
 postgres_con: Optional[Connection] = None
 
@@ -22,15 +23,21 @@ class Postgres:
     def __init__(self, connect: Connection):
         self._con = connect
 
-    def read_notifications(self) -> str:
-        """Чтение данных из очереди."""
-        with self._con.cursor() as cur:
+    def read_notifications(self) -> Any:
+        """Чтение данных из очереди.
+
+        Returns:
+            read_msg(Any): json-объект уведомления
+        """
+        with self._con.cursor(row_factory=dict_row) as cur:
             sql = """
-                SELECT * FROM notify_schedule.personal;
+                SELECT notification FROM notify_schedule.personal LIMIT 1;
             """
             cur.execute(sql)
-            read_msg = cur.fetchall()
-        return f"THE TEST RESULT IS {read_msg}"
+            read_msg = cur.fetchone()
+            if read_msg is not None:
+                return read_msg["notification"]
+        return None
 
 
 @lru_cache()

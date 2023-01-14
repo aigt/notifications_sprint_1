@@ -1,9 +1,10 @@
 from functools import lru_cache
-from typing import Any, Callable, Optional
+from typing import Callable, Optional
 
 from pika import BlockingConnection
 
 from core.settings import get_settings
+from models.notifications import TaskForWorker
 
 rabbitmq_con: Optional[BlockingConnection] = None
 
@@ -35,18 +36,19 @@ class Rabbit:
         self._channel.basic_consume(settings.rb_receiving_queue, callback)
         self._channel.start_consuming()
 
-    def send(self, queue: str, notification: Any) -> None:
+    def send(self, queue: str, notification: TaskForWorker) -> None:
         """Отправление данных в очередь.
 
         Args:
             queue(str): Имя очереди
             notification(TaskForWorker): данные для отправки
         """
-        self._channel.basic_publish(
-            exchange=settings.rb_exchange,
-            routing_key=settings.rb_transfer_queue,
-            body=notification,
-        )
+        if notification is not None:
+            self._channel.basic_publish(
+                exchange=settings.rb_exchange,
+                routing_key=settings.rb_transfer_queue,
+                body=notification,
+            )
 
 
 @lru_cache()

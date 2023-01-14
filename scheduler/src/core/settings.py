@@ -27,7 +27,7 @@ class Settings(BaseSettings):
     rb_password: str = Field("pass")
     rb_receiving_queue: str = Field("generator")
     rb_transfer_queue: str = Field("generator")
-    rb_exchange: str = Field("")
+    rb_exchange: str = Field("notifications")
 
 
 @lru_cache()
