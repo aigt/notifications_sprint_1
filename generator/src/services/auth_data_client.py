@@ -3,7 +3,7 @@ from typing import Generator
 import grpc
 from pydantic import BaseModel
 
-from grpcs import auth_notify_pb2_grpc
+from grpcs import auth_notify_pb2, auth_notify_pb2_grpc
 
 
 class User(BaseModel):
@@ -30,7 +30,7 @@ class AuthDataClient:
         with grpc.insecure_channel(self._host) as channel:
             stub = auth_notify_pb2_grpc.AuthNotifyStub(channel=channel)
 
-            for user in stub.GetUserData():  # noqa: WPS526
+            for user in stub.GetUserData(auth_notify_pb2.UsersDataRequest()):  # noqa: WPS526
                 yield User(
                     user_id=user.user_id,
                     name=user.name,
