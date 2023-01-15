@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+
+service AuthNotify {
+  rpc GetUserData (UserDataRequest) returns (UserDataResponse) {}
+}
+
+message UserDataRequest {
+  string user_id = 1;
+}
+
+message UserDataResponse {
+  string name = 1;
+  string email = 2;
+  string telephone = 3;
+}
