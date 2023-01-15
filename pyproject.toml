@@ -30,9 +30,12 @@ disallow_untyped_defs = true
 ignore_missing_imports = true
 explicit_package_bases = true
 namespace_packages = true
-ignore_errors = true
 exclude = [
     "venv",
     ".vscode",
     "generator/src/grpc/**/*.py",
 ]
+
+[[tool.mypy.overrides]]
+module = "generator.src.grpc.*"
+ignore_errors = true
