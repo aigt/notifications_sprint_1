@@ -213,7 +213,7 @@ services:
 volumes:
   mongo_vol:
   rabbitmq_vol:
-  user_vol:
+  users_vol:
   templates_vol:
   notifications_vol:
   history_vol:
