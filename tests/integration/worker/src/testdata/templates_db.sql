@@ -1,4 +1,5 @@
 DROP SCHEMA IF EXISTS notify_templates CASCADE;
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE SCHEMA IF NOT EXISTS notify_templates;
 
 
