@@ -13,7 +13,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x11\x61uth_notify.proto\"\x12\n\x10UsersDataRequest\"T\n\x11UsersDataResponse\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\r\n\x05\x65mail\x18\x03 \x01(\t\x12\x11\n\ttelephone\x18\x04 \x01(\t2D\n\nAuthNotify\x12\x36\n\x0bGetUserData\x12\x11.UsersDataRequest\x1a\x12.UsersDataResponse\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x11\x61uth_notify.proto\"\x12\n\x10UsersDataRequest\"T\n\x11UsersDataResponse\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\r\n\x05\x65mail\x18\x03 \x01(\t\x12\x11\n\ttelephone\x18\x04 \x01(\t2F\n\nAuthNotify\x12\x38\n\x0bGetUserData\x12\x11.UsersDataRequest\x1a\x12.UsersDataResponse\"\x00\x30\x01\x62\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'auth_notify_pb2', globals())
@@ -25,5 +25,5 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _USERSDATARESPONSE._serialized_start=41
   _USERSDATARESPONSE._serialized_end=125
   _AUTHNOTIFY._serialized_start=127
-  _AUTHNOTIFY._serialized_end=195
+  _AUTHNOTIFY._serialized_end=197
 # @@protoc_insertion_point(module_scope)

@@ -2,7 +2,7 @@ syntax = "proto3";
 
 
 service AuthNotify {
-  rpc GetUserData (UsersDataRequest) returns (UsersDataResponse) {}
+  rpc GetUserData (UsersDataRequest) returns (stream UsersDataResponse) {}
 }
 
 message UsersDataRequest {}

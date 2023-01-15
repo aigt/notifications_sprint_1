@@ -14,7 +14,7 @@ class AuthNotifyStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.GetUserData = channel.unary_unary(
+        self.GetUserData = channel.unary_stream(
                 '/AuthNotify/GetUserData',
                 request_serializer=auth__notify__pb2.UsersDataRequest.SerializeToString,
                 response_deserializer=auth__notify__pb2.UsersDataResponse.FromString,
@@ -33,7 +33,7 @@ class AuthNotifyServicer(object):
 
 def add_AuthNotifyServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'GetUserData': grpc.unary_unary_rpc_method_handler(
+            'GetUserData': grpc.unary_stream_rpc_method_handler(
                     servicer.GetUserData,
                     request_deserializer=auth__notify__pb2.UsersDataRequest.FromString,
                     response_serializer=auth__notify__pb2.UsersDataResponse.SerializeToString,
@@ -59,7 +59,7 @@ class AuthNotify(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/AuthNotify/GetUserData',
+        return grpc.experimental.unary_stream(request, target, '/AuthNotify/GetUserData',
             auth__notify__pb2.UsersDataRequest.SerializeToString,
             auth__notify__pb2.UsersDataResponse.FromString,
             options, channel_credentials,
