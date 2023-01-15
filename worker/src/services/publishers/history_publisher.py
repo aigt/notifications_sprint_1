@@ -7,7 +7,7 @@ from psycopg import sql
 from psycopg.errors import Error
 from psycopg.rows import dict_row
 
-from workers.worker import Publisher
+from services.publishers.publisher import Publisher
 
 
 class HistoryPublisher(Publisher):
