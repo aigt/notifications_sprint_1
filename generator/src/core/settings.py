@@ -28,6 +28,9 @@ class Settings(BaseSettings):
     mongo_dsn = Field(default="mongodb://localhost:27017")
     mongo_db = Field(default="ugc_movies")
 
+    # Настройки AuthServer
+    auth_host = Field(default="localhost:8080")
+
 
 @lru_cache()
 def get_settings() -> Settings:
