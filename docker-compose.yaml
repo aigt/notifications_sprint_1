@@ -141,6 +141,7 @@ services:
   users_db:
     image: postgres:15.0-alpine
     volumes:
+      - users_vol:/var/lib/postgresql/data/
       - ./users_db/:/docker-entrypoint-initdb.d
     env_file:
       - env_files/users_db.env
@@ -212,6 +213,7 @@ services:
 volumes:
   mongo_vol:
   rabbitmq_vol:
+  user_vol:
   templates_vol:
   notifications_vol:
   history_vol:
