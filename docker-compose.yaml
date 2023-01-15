@@ -1,6 +1,53 @@
 version: '3.9'
 
 services:
+  generator:
+    build: ./generator
+    env_file:
+      - ./env_files/generator.env
+    depends_on:
+      - rabbitmq
+    networks:
+      - rabbitmq_net
+      - mongo_net
+      - users_net
+
+  notification_handler:
+    build: ./notification_handler
+    env_file:
+      - ./env_files/notification_handler.env
+    depends_on:
+      - rabbitmq
+    networks:
+       - rabbitmq_net
+       - notifications_net
+
+  email_handler:
+    build: ./email_handler
+    env_file:
+      - ./env_files/email_handler.env
+    depends_on:
+      - rabbitmq
+    networks:
+      - rabbitmq_net
+      - notifications_net
+
+  app:
+    build: ./notification_api
+    expose:
+      - "8000"
+    env_file:
+      - ./env_files/api.env
+    healthcheck:
+      test: curl --fail http://app:8000/api/health/ || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 20
+    depends_on:
+      - rabbitmq
+    networks:
+      - rabbitmq_net
+
   worker:
     build: ./worker
     env_file:
@@ -8,6 +55,17 @@ services:
     networks:
       - rabbitmq_net
       - templates_net
+
+  scheduler:
+    build: ./scheduler
+    env_file:
+      - env_files/scheduler.env
+    depends_on:
+      - rabbitmq
+      - notifications_db
+    networks:
+      - rabbitmq_net
+      - notifications_net
 
   mongo1:
     hostname: mongo1
@@ -48,6 +106,9 @@ services:
     image: rabbitmq:3.11-alpine
     expose:
       - "5672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=user
+      - RABBITMQ_DEFAULT_PASS=pass
     volumes:
       - rabbitmq_vol:/var/lib/rabbitmq/
     networks:
@@ -81,6 +142,7 @@ services:
     image: postgres:15.0-alpine
     volumes:
       - users_vol:/var/lib/postgresql/data/
+      - ./users_db/:/docker-entrypoint-initdb.d
     env_file:
       - env_files/users_db.env
     environment:
@@ -151,8 +213,8 @@ services:
 volumes:
   mongo_vol:
   rabbitmq_vol:
-  templates_vol:
   users_vol:
+  templates_vol:
   notifications_vol:
   history_vol:
 
