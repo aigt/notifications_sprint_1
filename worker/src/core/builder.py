@@ -147,6 +147,10 @@ def build() -> WorkerApp:
         queue=settings.rb_worker_queue_name,
         durable=True,
     )
+    consumer_channel.queue_bind(
+        queue=settings.rb_worker_queue_name,
+        exchange=settings.rb_exchange_name,
+    )
 
     messages_render = Render(
         templates_storage=templates_storage,
