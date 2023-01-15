@@ -48,6 +48,7 @@ class TemplatesStorage:
             "SQL query: %s",  # noqa: WPS323
             sql_query,
         )
+
         with psycopg.connect(self._coninfo) as conn:
             with conn.cursor(row_factory=dict_row) as cursor:
 

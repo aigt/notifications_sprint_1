@@ -1,21 +1,77 @@
 import logging
-from typing import Dict
+from typing import Dict, Type
 
+from pika.adapters.blocking_connection import BlockingChannel
 from pika.credentials import PlainCredentials
 
 from brokers.rabbit import RabbitMQ
 from core.config import Settings
 from services import query_loader
 from services.consumer import Consumer
-from services.email_publisher import EmailPublisher
-from services.history_publisher import HistoryPublisher
+from services.publishers.email_publisher import EmailPublisher
+from services.publishers.history_publisher import HistoryPublisher
+from services.publishers.push_publisher import PushPublisher
+from services.publishers.queue_publisher import QueuePublisher
+from services.publishers.sms_publisher import SMSPublisher
 from services.render import Render
 from services.templates_storage import TemplatesStorage
 from worker_app import WorkerApp
 from workers.email import EmailWorker
 from workers.history import HistoryWorker
+from workers.push import PushWorker
+from workers.sms import SMSWorker
 from workers.worker import Worker
 from workers.worker_message import TargetWorkerName
+
+
+def build_queued_worker(
+    rabbit_connection: BlockingChannel,
+    exchange_name: str,
+    queue_name: str,
+    messages_render: Render,
+    publisherclass_to_instantiate: Type[QueuePublisher],
+    workerclass_to_instantiate: Type[Worker],
+) -> Worker:
+    """Создать и внедрить зависимости в воркер публикующий сообщения в очередь.
+
+    Args:
+        rabbit_connection (BlockingChannel): Подключение RabbitMQ.
+        exchange_name (str): Exchange.
+        queue_name (str): Имя очереди для публикации.
+        messages_render (Render): Рендер сообщений.
+        publisherclass_to_instantiate (Type[QueuePublisher]): Класс публишера.
+        workerclass_to_instantiate (Type[Worker]): Класс воркера для создания.
+
+    Returns:
+        Worker: Созданный воркер
+    """
+    worker_channel = rabbit_connection.channel()
+
+    worker_channel.exchange_declare(
+        exchange=exchange_name,
+        durable=True,
+    )
+
+    worker_channel.queue_declare(
+        queue=queue_name,
+        durable=True,
+    )
+
+    worker_channel.queue_bind(
+        queue=queue_name,
+        exchange=exchange_name,
+    )
+
+    publisher = publisherclass_to_instantiate(
+        email_rabbit_channel=worker_channel,
+        exchange=exchange_name,
+        queue=queue_name,
+    )
+
+    return workerclass_to_instantiate(
+        publisher=publisher,
+        render=messages_render,
+    )
 
 
 def build() -> WorkerApp:
@@ -37,12 +93,20 @@ def build() -> WorkerApp:
         settings.rb_worker_queue_name,
     )
     logging.info(
-        "email_exchange_name: %s",  # noqa: WPS323
-        settings.rb_email_exchange_name,
+        "exchange_name: %s",  # noqa: WPS323
+        settings.rb_exchange_name,
     )
     logging.info(
         "email_queue_name: %s",  # noqa: WPS323
         settings.rb_email_queue_name,
+    )
+    logging.info(
+        "sms_queue_name: %s",  # noqa: WPS323
+        settings.rb_sms_queue_name,
+    )
+    logging.info(
+        "push_queue_name: %s",  # noqa: WPS323
+        settings.rb_push_queue_name,
     )
     logging.info(
         "Templates DB host:port: %s:%s",  # noqa: WPS323
@@ -78,42 +142,55 @@ def build() -> WorkerApp:
     rabbit.connect()
     rabbit_connection = rabbit.connection
 
-    email_worker_channel = rabbit_connection.channel()
-    email_worker_channel.exchange_declare(
-        exchange=settings.rb_email_exchange_name,
+    consumer_channel = rabbit_connection.channel()
+    consumer_channel.exchange_declare(
+        exchange=settings.rb_exchange_name,
         durable=True,
     )
-    email_worker_channel.queue_declare(
-        queue=settings.rb_email_queue_name,
-        durable=True,
-    )
-    email_worker_channel.queue_bind(
-        queue=settings.rb_email_queue_name,
-        exchange=settings.rb_email_exchange_name,
-    )
-
-    subscriber_channel = rabbit_connection.channel()
-    subscriber_channel.queue_declare(
+    consumer_channel.queue_declare(
         queue=settings.rb_worker_queue_name,
         durable=True,
+    )
+    consumer_channel.queue_bind(
+        queue=settings.rb_worker_queue_name,
+        exchange=settings.rb_exchange_name,
     )
 
     messages_render = Render(
         templates_storage=templates_storage,
     )
 
-    email_publisher = EmailPublisher(
-        email_rabbit_channel=email_worker_channel,
-        exchange=settings.rb_email_exchange_name,
-        queue=settings.rb_email_queue_name,
+    email_worker = build_queued_worker(
+        rabbit_connection=rabbit_connection,
+        exchange_name=settings.rb_exchange_name,
+        queue_name=settings.rb_email_queue_name,
+        messages_render=messages_render,
+        publisherclass_to_instantiate=EmailPublisher,
+        workerclass_to_instantiate=EmailWorker,
     )
-    email_worker = EmailWorker(
-        publisher=email_publisher,
-        render=messages_render,
+
+    sms_worker = build_queued_worker(
+        rabbit_connection=rabbit_connection,
+        exchange_name=settings.rb_exchange_name,
+        queue_name=settings.rb_sms_queue_name,
+        messages_render=messages_render,
+        publisherclass_to_instantiate=SMSPublisher,
+        workerclass_to_instantiate=SMSWorker,
+    )
+
+    push_worker = build_queued_worker(
+        rabbit_connection=rabbit_connection,
+        exchange_name=settings.rb_exchange_name,
+        queue_name=settings.rb_push_queue_name,
+        messages_render=messages_render,
+        publisherclass_to_instantiate=PushPublisher,
+        workerclass_to_instantiate=PushWorker,
     )
 
     workers: Dict[TargetWorkerName, Worker] = {
         "email": email_worker,
+        "sms": sms_worker,
+        "push": push_worker,
     }
 
     # history_worker выполняется для всех сообщений, поэтому он устанавливается
@@ -124,11 +201,11 @@ def build() -> WorkerApp:
     )
     history_worker = HistoryWorker(publisher=history_publisher, render=messages_render)
 
-    subscriber = Consumer(
+    consumer = Consumer(
         workers=workers,
         history_worker=history_worker,
-        subscriber_channel=subscriber_channel,
+        subscriber_channel=consumer_channel,
         subscriber_queue_name=settings.rb_worker_queue_name,
     )
 
-    return WorkerApp(subscriber=subscriber)
+    return WorkerApp(consumer=consumer)

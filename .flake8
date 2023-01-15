@@ -38,34 +38,40 @@ ignore =
 
 
 per-file-ignores =
+    # WPS201 Found module with too many imports: 14 > 12
+    # WPS202 Found too many module members: 8 > 7
+    # WPS213 Found too many expressions: 10 > 9
     # WPS323 Found `%` string formatting
     # WPS407 Found mutable module constant
     # WPS432 Found magic number: ...
-    # WPS201 Found module with too many imports: 14 > 12
-    # WPS213 Found too many expressions: 10 > 9
-    worker/src/core/logger.py: WPS323
     notification_api/src/core/logger.py: WPS323, WPS407
     notification_api/src/core/config.py: WPS432
     notification_api/src/core/openapi_docs.py: WPS407
     notification_api/src/models/model_for_queue.py: WPS600 WPS110
+
     tests/integration: WPS401
+
     notification_handler/src/core/logger.py: WPS323, WPS407
     notification_handler/src/core/settings.py: WPS432 WPS323
     notification_handler/src/models/notification.py: WPS110
     notification_handler/src/db/postgres/postgres.py: WPS323
+
     generator/src/core/logger.py: WPS323, WPS407
     generator/src/core/settings.py: WPS432 WPS323
-    generator/src/models/notifications.py: WPS110
-    worker/src/core/config.py: WPS432
+    generator/src/db/postgres/postgres.py: WPS332 WPS462
     generator/src/generator/generator.py: WPS602 WPS324 WPS507
-    generator/src/db/postgres/postgres.py: WPS462
-    worker/src/core/builder.py: WPS213
+    generator/src/models/notifications.py: WPS110
+
+    worker/src/core/builder.py: WPS213, WPS201
+    worker/src/core/config.py: WPS432
+    worker/src/core/logger.py: WPS323
+    worker/src/errors/exceptions.py: WPS202
+
     email_handler/src/core/logger.py: WPS323, WPS407
     email_handler/src/core/config.py: WPS432 WPS323
     email_handler/src/models/notification.py: WPS110
     email_handler/src/sender/email_sender.py: WPS110
-    worker/src/core/builder.py: WPS213, WPS201
-    generator/src/db/postgres/postgres.py: WPS332 WPS462
+
 
 exclude =
     # No need to traverse our git directory

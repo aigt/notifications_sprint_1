@@ -31,5 +31,7 @@ class Settings(BaseSettings):
         description="Период повторных попыток подключения, с",
     )
     rb_worker_queue_name = "worker"
-    rb_email_exchange_name = "notifications"
+    rb_exchange_name = "notifications"
     rb_email_queue_name = "email"
+    rb_sms_queue_name = "sms"
+    rb_push_queue_name = "push"
