@@ -13,6 +13,7 @@ from models.notifications import (
     TaskForWorker,
 )
 from models.welcome_model import WelcomeFieldsModel
+from services.auth_data_client import AuthDataClient
 
 settings = get_settings()
 logger = logging.getLogger(__name__)
@@ -26,10 +27,12 @@ class Generator:
         queue: BaseQueue,
         ugc_base: BaseDocumentData,
         users_base: BaseDatabase,
+        auth_data_client: AuthDataClient,
     ):
         self.queue = queue
         self.ugc_base = ugc_base
         self.users_base = users_base
+        self.auth_data_client = auth_data_client
 
     def create_data_for_worker(
         self,
@@ -129,16 +132,15 @@ class Generator:
         Args:
             notification(NotificationFromNotifications): уведомление
         """
-        for emails_count in self.users_base.get_emails_all_users():
-            for email in emails_count:
-                task = TaskForWorker(
-                    template=notification.type,
-                    user_id=email.get("user_id"),
-                    targets=[NotificationTargets.email],
-                    email=email.get("email"),
-                    fields=notification.fields,
-                )
-                self.queue.send(
-                    settings.rb_transfer_queue,
-                    task,
-                )
+        for user in self.auth_data_client.users_data():
+            task = TaskForWorker(
+                template=notification.type,
+                user_id=user.user_id,
+                targets=[NotificationTargets.email],
+                email=user.email,
+                fields=notification.fields,
+            )
+            self.queue.send(
+                settings.rb_transfer_queue,
+                task,
+            )
