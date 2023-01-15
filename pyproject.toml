@@ -36,6 +36,7 @@ exclude = [
     ".vscode",
     "generator/src/grpc/**/*.py",
 ]
+files = "./**/*.py"
 
 [[tool.mypy.overrides]]
 module = "generator.src.grpc.*"
