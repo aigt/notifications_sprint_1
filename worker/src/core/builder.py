@@ -143,6 +143,10 @@ def build() -> WorkerApp:
     rabbit_connection = rabbit.connection
 
     consumer_channel = rabbit_connection.channel()
+    consumer_channel.exchange_declare(
+        exchange=settings.rb_exchange_name,
+        durable=True,
+    )
     consumer_channel.queue_declare(
         queue=settings.rb_worker_queue_name,
         durable=True,
