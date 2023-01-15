@@ -39,9 +39,7 @@ def add_AuthNotifyServicer_to_server(servicer, server):
             response_serializer=auth__notify__pb2.UserDataResponse.SerializeToString,
         ),
     }
-    generic_handler = grpc.method_handlers_generic_handler(
-        "google.golang.org.AuthNotify", rpc_method_handlers
-    )
+    generic_handler = grpc.method_handlers_generic_handler("google.golang.org.AuthNotify", rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 
 
