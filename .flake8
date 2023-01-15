@@ -83,7 +83,8 @@ exclude =
     build,
     # This contains builds of flake8 that we don't want to check
     dist,
-    tests/integration/*
+    tests/integration/*,
+    generator/src/grpc/*
 
 
 max-complexity = 10

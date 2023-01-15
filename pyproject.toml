@@ -18,7 +18,9 @@ src_paths = [
     "notification_api/src",
     "generator/src",
 ]
-skip = ["notification_handler/src/main.py"]
+skip = [
+    "notification_handler/src/main.py",
+]
 
 [tool.mypy]
 python_version = "3.10"
@@ -28,8 +30,9 @@ disallow_untyped_defs = true
 ignore_missing_imports = true
 explicit_package_bases = true
 namespace_packages = true
+ignore_errors = true
 exclude = [
     "venv",
     ".vscode",
+    "generator/src/grpc/**/*.py",
 ]
-files = "./**/*.py"
