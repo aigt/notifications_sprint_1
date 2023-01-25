@@ -1,5 +1,5 @@
+from grpc_test_server.users_data import users, users_data
 from psycopg import Cursor
-from testdata.postgres_data import users, users_data
 
 
 def add_users(cur: Cursor) -> None:
