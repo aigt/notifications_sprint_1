@@ -5,7 +5,7 @@ import pyshorteners
 from pydantic import ValidationError
 
 from core.settings import get_settings
-from db.base import BaseDatabase, BaseDocumentData, BaseQueue
+from db.base import BaseDocumentData, BaseQueue
 from models.notifications import (
     NotificationFromNotifications,
     NotificationTargets,
@@ -26,12 +26,10 @@ class Generator:
         self,
         queue: BaseQueue,
         ugc_base: BaseDocumentData,
-        users_base: BaseDatabase,
         auth_data_client: AuthDataClient,
     ):
         self.queue = queue
         self.ugc_base = ugc_base
-        self.users_base = users_base
         self.auth_data_client = auth_data_client
 
     def create_data_for_worker(

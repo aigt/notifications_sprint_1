@@ -8,13 +8,6 @@ from pydantic import BaseSettings, Field
 class Settings(BaseSettings):
     """Настройки приложения."""
 
-    # Настройки Postgres User Data
-    postgres_db: str = Field("users")
-    postgres_user: str = Field("app")
-    postgres_password: str = Field("postgres")
-    postgres_host: str = Field("localhost")
-    postgres_port: int = Field(5432)
-
     # Настройки Rabbitmq
     rb_host: str = Field("localhost")
     rb_port: int = Field(5672)
@@ -29,7 +22,7 @@ class Settings(BaseSettings):
     mongo_db = Field(default="ugc_movies")
 
     # Настройки AuthServer
-    auth_host = Field(default="localhost:8080")
+    auth_host = Field("nginx")
 
 
 @lru_cache()

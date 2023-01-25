@@ -10,7 +10,6 @@ services:
     networks:
       - rabbitmq_net
       - mongo_net
-      - users_net
 
   notification_handler:
     build: ./notification_handler
@@ -138,30 +137,6 @@ services:
     networks:
       - templates_net
 
-  users_db:
-    image: postgres:15.0-alpine
-    volumes:
-      - users_vol:/var/lib/postgresql/data/
-      - ./users_db/:/docker-entrypoint-initdb.d
-    env_file:
-      - env_files/users_db.env
-    environment:
-      - POSTGRES_HOST=users_db
-      - POSTGRES_PORT=5432
-    expose:
-      - "5432"
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "pg_isready -d $$POSTGRES_DB -h $$POSTGRES_HOST -p $$POSTGRES_PORT -U $$POSTGRES_USER"
-        ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    networks:
-      - users_net
-
   notifications_db:
     image: postgres:15.0-alpine
     volumes:
@@ -223,6 +198,5 @@ networks:
   mongo_net:
   rabbitmq_net:
   templates_net:
-  users_net:
   notifications_net:
   history_net:
