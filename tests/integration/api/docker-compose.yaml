@@ -45,6 +45,7 @@ services:
     networks:
       - rabbitmq_net
       - templates_net
+      - history_net
 
   mongo1:
     image: mongo
