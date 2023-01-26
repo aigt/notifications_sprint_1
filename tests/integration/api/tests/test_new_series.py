@@ -10,7 +10,7 @@ settings = get_settings()
 
 
 def test_add_notification_new_series_200(
-    http_con: Session, rabbit_channel: BlockingChannel, add_users_postgres: None, add_bookmark: None
+    http_con: Session, rabbit_channel: BlockingChannel, add_bookmark: None
 ) -> None:
     """Проверка работы и возвращаемых данных ендпоинта api/v1/welocme."""
 

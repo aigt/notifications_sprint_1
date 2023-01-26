@@ -4,7 +4,7 @@ services:
   generator:
     build: ../../../generator
     env_file:
-      - ../../../env_files/generator.env.example
+      - test.env
     depends_on:
       - rabbitmq
     networks:
@@ -93,29 +93,6 @@ services:
     networks:
       - templates_net
 
-  users_db:
-    image: postgres:15.0-alpine
-    volumes:
-      - ../../../users_db/:/docker-entrypoint-initdb.d
-    env_file:
-      - ../../../env_files/users_db.env.example
-    environment:
-      - POSTGRES_HOST=users_db
-      - POSTGRES_PORT=5432
-    ports:
-      - "5432:5432"
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "pg_isready -d $$POSTGRES_DB -h $$POSTGRES_HOST -p $$POSTGRES_PORT -U $$POSTGRES_USER"
-        ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    networks:
-      - users_net
-
   notifications_db:
     image: postgres:15.0-alpine
     volumes:
@@ -162,17 +139,24 @@ services:
     networks:
       - history_net
 
+  grpc:
+    build: ./grpc_test_server/
+    ports:
+      - "5001:5001"
+    networks:
+      - users_net
+
   tests:
     build: .
     depends_on:
       - app
       - rabbitmq
-      - users_db
       - generator
       - notification_handler
       - notifications_db
       - templates_db
       - worker
+      - grpc
     env_file:
       - test.env
     entrypoint: >
@@ -181,7 +165,6 @@ services:
     networks:
       - mongo_net
       - rabbitmq_net
-      - users_net
       - notifications_net
 
 networks:
