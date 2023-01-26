@@ -19,6 +19,11 @@ class AuthNotifyStub(object):
             request_serializer=auth__notify__pb2.UsersDataRequest.SerializeToString,
             response_deserializer=auth__notify__pb2.UsersDataResponse.FromString,
         )
+        self.GetUserDataFromUsersId = channel.unary_stream(
+            "/AuthNotify/GetUserDataFromUsersId",
+            request_serializer=auth__notify__pb2.UsersIds.SerializeToString,
+            response_deserializer=auth__notify__pb2.UsersDataResponse.FromString,
+        )
 
 
 class AuthNotifyServicer(object):
@@ -30,12 +35,23 @@ class AuthNotifyServicer(object):
         context.set_details("Method not implemented!")
         raise NotImplementedError("Method not implemented!")
 
+    def GetUserDataFromUsersId(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details("Method not implemented!")
+        raise NotImplementedError("Method not implemented!")
+
 
 def add_AuthNotifyServicer_to_server(servicer, server):
     rpc_method_handlers = {
         "GetUserData": grpc.unary_stream_rpc_method_handler(
             servicer.GetUserData,
             request_deserializer=auth__notify__pb2.UsersDataRequest.FromString,
+            response_serializer=auth__notify__pb2.UsersDataResponse.SerializeToString,
+        ),
+        "GetUserDataFromUsersId": grpc.unary_stream_rpc_method_handler(
+            servicer.GetUserDataFromUsersId,
+            request_deserializer=auth__notify__pb2.UsersIds.FromString,
             response_serializer=auth__notify__pb2.UsersDataResponse.SerializeToString,
         ),
     }
@@ -65,6 +81,35 @@ class AuthNotify(object):
             target,
             "/AuthNotify/GetUserData",
             auth__notify__pb2.UsersDataRequest.SerializeToString,
+            auth__notify__pb2.UsersDataResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+        )
+
+    @staticmethod
+    def GetUserDataFromUsersId(
+        request,
+        target,
+        options=(),
+        channel_credentials=None,
+        call_credentials=None,
+        insecure=False,
+        compression=None,
+        wait_for_ready=None,
+        timeout=None,
+        metadata=None,
+    ):
+        return grpc.experimental.unary_stream(
+            request,
+            target,
+            "/AuthNotify/GetUserDataFromUsersId",
+            auth__notify__pb2.UsersIds.SerializeToString,
             auth__notify__pb2.UsersDataResponse.FromString,
             options,
             channel_credentials,

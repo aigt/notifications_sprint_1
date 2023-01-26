@@ -14,7 +14,16 @@ class Auth(AuthNotifyServicer):
     """Сервис интерфейса gRPC."""
 
     def GetUserData(self, request, context) -> Generator:
-        """Метод для передачи данных клиентов."""
+        """Метод для передачи данных всех клиентов."""
+        i = 0
+        for user in users_data:
+            yield UsersDataResponse(user_id=str(user[0]), email=user[1], name=user[2], telephone=str(user[3]))
+            i += 1
+            if len(users_data) == i:
+                break
+
+    def GetUserDataFromUsersId(self, request, context):
+        """Метод для передачи данных клиентов по списку их id."""
         i = 0
         for user in users_data:
             yield UsersDataResponse(user_id=str(user[0]), email=user[1], name=user[2], telephone=str(user[3]))

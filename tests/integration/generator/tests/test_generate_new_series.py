@@ -1,16 +1,16 @@
 import time
 
 import orjson
+from grpc_test_server.users_data import users_data
 from pika.adapters.blocking_connection import BlockingChannel
 from settings import get_settings
 from testdata.notifications import new_series
-from testdata.postgres_data import users_data
 from utils.send_data import send
 
 settings = get_settings()
 
 
-def test_new_series(rabbit_channel: BlockingChannel, add_users_postgres: None, add_bookmark: None) -> None:
+def test_new_series(rabbit_channel: BlockingChannel, add_bookmark: None) -> None:
     """Проверка доставки new_series уведомления из очереди generator в очередь worker."""
     send(rabbit_channel, settings.rb_receiving_queue, new_series.json().encode())
     time.sleep(3)

@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     mongo_db = Field(default="ugc_movies")
 
     # Настройки AuthServer
-    auth_host = Field("nginx")
+    auth_host = Field("[::]:5001")
 
 
 @lru_cache()

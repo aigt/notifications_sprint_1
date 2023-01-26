@@ -14,12 +14,13 @@ _sym_db = _symbol_database.Default()
 
 
 DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(
-    b'\n\x11\x61uth_notify.proto"\x12\n\x10UsersDataRequest"T\n\x11UsersDataResponse\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\r\n\x05\x65mail\x18\x03 \x01(\t\x12\x11\n\ttelephone\x18\x04 \x01(\t2F\n\nAuthNotify\x12\x38\n\x0bGetUserData\x12\x11.UsersDataRequest\x1a\x12.UsersDataResponse"\x00\x30\x01\x62\x06proto3'
+    b'\n\x11\x61uth_notify.proto"\x12\n\x10UsersDataRequest"T\n\x11UsersDataResponse\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\r\n\x05\x65mail\x18\x03 \x01(\t\x12\x11\n\ttelephone\x18\x04 \x01(\t"\x1c\n\x08UsersIds\x12\x10\n\x08list_ids\x18\x01 \x01(\t2\x83\x01\n\nAuthNotify\x12\x38\n\x0bGetUserData\x12\x11.UsersDataRequest\x1a\x12.UsersDataResponse"\x00\x30\x01\x12;\n\x16GetUserDataFromUsersId\x12\t.UsersIds\x1a\x12.UsersDataResponse"\x00\x30\x01\x62\x06proto3'
 )
 
 
 _USERSDATAREQUEST = DESCRIPTOR.message_types_by_name["UsersDataRequest"]
 _USERSDATARESPONSE = DESCRIPTOR.message_types_by_name["UsersDataResponse"]
+_USERSIDS = DESCRIPTOR.message_types_by_name["UsersIds"]
 UsersDataRequest = _reflection.GeneratedProtocolMessageType(
     "UsersDataRequest",
     (_message.Message,),
@@ -42,6 +43,17 @@ UsersDataResponse = _reflection.GeneratedProtocolMessageType(
 )
 _sym_db.RegisterMessage(UsersDataResponse)
 
+UsersIds = _reflection.GeneratedProtocolMessageType(
+    "UsersIds",
+    (_message.Message,),
+    {
+        "DESCRIPTOR": _USERSIDS,
+        "__module__": "auth_notify_pb2"
+        # @@protoc_insertion_point(class_scope:UsersIds)
+    },
+)
+_sym_db.RegisterMessage(UsersIds)
+
 _AUTHNOTIFY = DESCRIPTOR.services_by_name["AuthNotify"]
 if _descriptor._USE_C_DESCRIPTORS == False:
 
@@ -50,6 +62,8 @@ if _descriptor._USE_C_DESCRIPTORS == False:
     _USERSDATAREQUEST._serialized_end = 39
     _USERSDATARESPONSE._serialized_start = 41
     _USERSDATARESPONSE._serialized_end = 125
-    _AUTHNOTIFY._serialized_start = 127
-    _AUTHNOTIFY._serialized_end = 197
+    _USERSIDS._serialized_start = 127
+    _USERSIDS._serialized_end = 155
+    _AUTHNOTIFY._serialized_start = 158
+    _AUTHNOTIFY._serialized_end = 289
 # @@protoc_insertion_point(module_scope)

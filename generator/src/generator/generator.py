@@ -68,14 +68,13 @@ class Generator:
         users = self.ugc_base.get_users_by_movie_id(movie_id)
         if users is None or len(users) == 0:
             return None
-        emails = self.users_base.get_users_emails(users)
 
-        for email in emails:
+        for user in self.auth_data_client.users_data_from_ids(users):
             task = TaskForWorker(
                 template=NotificationType.show_subs,
-                user_id=email.get("user_id"),
+                user_id=user.user_id,
                 targets=[NotificationTargets.email],
-                email=email.get("email"),
+                email=user.email,
                 fields=notification.fields,
             )
             self.queue.send(
