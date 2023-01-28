@@ -10,7 +10,7 @@ settings = get_settings()
 
 
 def test_add_notification_new_series_200(
-    http_con: Session, rabbit_channel: BlockingChannel, add_users_postgres: None, add_bookmark: None
+    http_con: Session, rabbit_channel: BlockingChannel, add_bookmark: None
 ) -> None:
     """Проверка работы и возвращаемых данных ендпоинта api/v1/welocme."""
 
@@ -19,8 +19,8 @@ def test_add_notification_new_series_200(
     for method_frame, _, payload in rabbit_channel.consume(settings.rb_emails_queue, auto_ack=True):
         payload = orjson.loads(payload)
 
-        assert payload.get("email") == "user_2@gmail.com"
-        if method_frame.delivery_tag == 1:
+        assert payload.get("email") in ["user_1@gmail.com", "user_2@gmail.com"]
+        if method_frame.delivery_tag == 2:
             break
 
 

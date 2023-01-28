@@ -4,21 +4,6 @@ from typing import Callable, List
 from models.notifications import Notification
 
 
-class BaseDatabase(ABC):
-    """Абстрактный класс для реляционной базы данных."""
-
-    @abstractmethod
-    def get_users_emails(self, user_id_list: List[str]) -> List:
-        """Запрос имени пользователя по его почте.
-
-        Args:
-            user_id_list(list): Спискок пользователей, чъя почта необходима
-
-        Returns:
-            (list): Список пар {user_id: email}
-        """
-
-
 class BaseQueue(ABC):
     """Абстрактный класс для работы с очередью."""
 

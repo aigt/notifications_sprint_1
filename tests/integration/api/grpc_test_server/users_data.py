@@ -6,9 +6,9 @@ user_2_id = "5358a10e-a177-41e9-a714-3dc3cc3a99e8"
 user_1 = [user_1_id, "user_1", "pass_1"]
 user_2 = [user_2_id, "user_2", "pass_2"]
 
-user_1_data = [user_1_id, "user_1@gmail.com"]
+user_1_data = [user_1_id, "user_1@gmail.com", "user_1", 88005353525]
 
-user_2_data = [user_2_id, "user_2@gmail.com"]
+user_2_data = [user_2_id, "user_2@gmail.com", "user_2", 88005353535]
 
 users = (user_1, user_2)
 

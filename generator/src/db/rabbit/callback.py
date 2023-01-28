@@ -4,7 +4,6 @@ from pika.spec import Basic, BasicProperties
 
 from core.settings import get_settings
 from db.mongo.mongo import get_mongo
-from db.postgres.postgres import get_postgres
 from db.rabbit.rabbitmq import get_rabbit
 from generator.generator import Generator
 from models.notifications import Meta, NotificationFromNotifications
@@ -39,7 +38,6 @@ def callback(
     generator = Generator(
         queue=get_rabbit(),
         ugc_base=get_mongo(),
-        users_base=get_postgres(),
         auth_data_client=AuthDataClient(settings.auth_host),
     )
     generator.create_data_for_worker(notification)
