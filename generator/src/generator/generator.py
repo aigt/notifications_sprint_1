@@ -8,6 +8,7 @@ from core.settings import get_settings
 from db.base import BaseDocumentData, BaseQueue
 from models.notifications import (
     NotificationFromNotifications,
+    NotificationScale,
     NotificationTargets,
     NotificationType,
     TaskForWorker,
@@ -51,7 +52,33 @@ class Generator:
             self.create_new_series(notification)
 
         elif notification.type == NotificationType.info:
+            if notification.meta.scale == NotificationScale.individual:
+                self.create_info_from_ids_list(notification)
+                return
             self.create_info(notification)
+
+    def create_info_from_ids_list(self, notification: NotificationFromNotifications) -> None:
+        """Создание задач для рассылки информации по списку идентификаторов пользователей.
+
+        Args:
+            notification(NotificationFromNotifications): уведомление
+        """
+        users = notification.fields.get("user_id")
+
+        if isinstance(users, str):
+            users = [users]
+        for user in self.auth_data_client.users_data_from_ids(users):
+            task = TaskForWorker(
+                template=NotificationType.info,
+                user_id=user.user_id,
+                targets=[NotificationTargets.email],
+                email=user.email,
+                fields=notification.fields,
+            )
+            self.queue.send(
+                settings.rb_transfer_queue,
+                task,
+            )
 
     def create_new_series(self, notification: NotificationFromNotifications) -> None:
         """Создание уведомлений о выходе новой серии.
