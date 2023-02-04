@@ -1,5 +1,5 @@
 import enum
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 from models.orjson import OrjsonModel
 
@@ -40,4 +40,4 @@ class Notification(OrjsonModel):
     meta: Meta
     type: NotificationType
     custom_template: Optional[Any]
-    fields: Dict[str, str]
+    fields: Dict[str, List[str]]
