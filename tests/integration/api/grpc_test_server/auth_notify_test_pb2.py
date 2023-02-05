@@ -56,7 +56,6 @@ _sym_db.RegisterMessage(UsersIds)
 
 _AUTHNOTIFY = DESCRIPTOR.services_by_name["AuthNotify"]
 if _descriptor._USE_C_DESCRIPTORS == False:
-
     DESCRIPTOR._options = None
     _USERSDATAREQUEST._serialized_start = 21
     _USERSDATAREQUEST._serialized_end = 39
