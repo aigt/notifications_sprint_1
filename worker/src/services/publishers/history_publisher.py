@@ -44,7 +44,6 @@ class HistoryPublisher(Publisher):
 
         with psycopg.connect(self._coninfo) as conn:
             with conn.cursor(row_factory=dict_row) as cursor:
-
                 cursor.execute(
                     sql_query,
                     {
